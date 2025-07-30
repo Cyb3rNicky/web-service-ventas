@@ -6,9 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddDbContext<VentasDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("MySqlConnection"),
-        new MySqlServerVersion(new Version(8, 0, 35)) 
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("PostgresConnection")
     ));
 
 builder.Services.AddControllers();

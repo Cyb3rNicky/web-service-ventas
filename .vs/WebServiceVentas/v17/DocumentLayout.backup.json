@@ -1,0 +1,153 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|c:\\users\\allan\\documents\\goldparser\\partituras\\webserviceventas\\webserviceventas\\migrations\\20250730172638_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|solutionrelative:webserviceventas\\migrations\\20250730172638_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Migrations\\20250730172412_AgregarCantidadYDescripcionAProducto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:WebServiceVentas\\Migrations\\20250730172412_AgregarCantidadYDescripcionAProducto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|c:\\users\\allan\\documents\\goldparser\\partituras\\webserviceventas\\webserviceventas\\models\\producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|solutionrelative:webserviceventas\\models\\producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|c:\\users\\allan\\documents\\goldparser\\partituras\\webserviceventas\\webserviceventas\\controllers\\productoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|solutionrelative:webserviceventas\\controllers\\productoscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|c:\\users\\allan\\documents\\goldparser\\partituras\\webserviceventas\\webserviceventas\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|solutionrelative:webserviceventas\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|c:\\users\\allan\\documents\\goldparser\\partituras\\webserviceventas\\webserviceventas\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|solutionrelative:webserviceventas\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|c:\\users\\allan\\documents\\goldparser\\partituras\\webserviceventas\\webserviceventas\\data\\ventasdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|solutionrelative:webserviceventas\\data\\ventasdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|c:\\users\\allan\\documents\\goldparser\\partituras\\webserviceventas\\webserviceventas\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0EE6AFC6-EE1C-4B68-A067-CE8D6906C761}|WebServiceVentas\\WebServiceVentas.csproj|solutionrelative:webserviceventas\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20250730172638_InitialCreate.cs",
+              "DocumentMoniker": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Migrations\\20250730172638_InitialCreate.cs",
+              "RelativeDocumentMoniker": "WebServiceVentas\\Migrations\\20250730172638_InitialCreate.cs",
+              "ToolTip": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Migrations\\20250730172638_InitialCreate.cs",
+              "RelativeToolTip": "WebServiceVentas\\Migrations\\20250730172638_InitialCreate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA4AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-30T17:26:38.263Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "20250730172412_AgregarCantidadYDescripcionAProducto.cs",
+              "DocumentMoniker": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Migrations\\20250730172412_AgregarCantidadYDescripcionAProducto.cs",
+              "RelativeDocumentMoniker": "WebServiceVentas\\Migrations\\20250730172412_AgregarCantidadYDescripcionAProducto.cs",
+              "ToolTip": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Migrations\\20250730172412_AgregarCantidadYDescripcionAProducto.cs",
+              "RelativeToolTip": "WebServiceVentas\\Migrations\\20250730172412_AgregarCantidadYDescripcionAProducto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-30T17:24:12.694Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\appsettings.json",
+              "RelativeDocumentMoniker": "WebServiceVentas\\appsettings.json",
+              "ToolTip": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\appsettings.json",
+              "RelativeToolTip": "WebServiceVentas\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-07-26T03:22:58.337Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "WebServiceVentas\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Properties\\launchSettings.json",
+              "RelativeToolTip": "WebServiceVentas\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-07-26T03:34:30.253Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ProductosController.cs",
+              "DocumentMoniker": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Controllers\\ProductosController.cs",
+              "RelativeDocumentMoniker": "WebServiceVentas\\Controllers\\ProductosController.cs",
+              "ToolTip": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Controllers\\ProductosController.cs",
+              "RelativeToolTip": "WebServiceVentas\\Controllers\\ProductosController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAWwBIAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-26T03:25:24.535Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Producto.cs",
+              "DocumentMoniker": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Models\\Producto.cs",
+              "RelativeDocumentMoniker": "WebServiceVentas\\Models\\Producto.cs",
+              "ToolTip": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Models\\Producto.cs",
+              "RelativeToolTip": "WebServiceVentas\\Models\\Producto.cs",
+              "ViewState": "AgIAAAcAAAAAAAAAAAAIwBQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-26T03:18:07.806Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Program.cs",
+              "RelativeDocumentMoniker": "WebServiceVentas\\Program.cs",
+              "ToolTip": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Program.cs",
+              "RelativeToolTip": "WebServiceVentas\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-26T03:23:32.045Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "VentasDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Data\\VentasDbContext.cs",
+              "RelativeDocumentMoniker": "WebServiceVentas\\Data\\VentasDbContext.cs",
+              "ToolTip": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\Data\\VentasDbContext.cs",
+              "RelativeToolTip": "WebServiceVentas\\Data\\VentasDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAABdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-26T03:19:56.409Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
