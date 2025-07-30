@@ -41,4 +41,6 @@ app.MapControllers();
 
 app.MapGet("/", () => "Funciona sin DB");
 
+app.MapGet("/healthz", () => Results.Ok("Healthy"));
+
 app.Run();
