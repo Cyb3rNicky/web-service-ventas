@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "fkEk6cLGRFp36w1WzXqL8DH9N1/AVy1Hs5vYl3OU2lc=",
+  "Source": "WebServiceVentas",
+  "BasePath": "_content/WebServiceVentas",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
