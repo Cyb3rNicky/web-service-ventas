@@ -38,7 +38,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/", () => "Funciona sin DB");
+app.MapGet("/", context =>
+{
+    context.Response.Redirect("/swagger");
+    return Task.CompletedTask;
+});
 
 app.MapGet("/healthz", () => Results.Ok("Healthy"));
 
