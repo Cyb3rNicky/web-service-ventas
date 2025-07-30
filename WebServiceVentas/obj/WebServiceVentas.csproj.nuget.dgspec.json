@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\WebServiceVentas.csproj": {}
+    "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj": {}
   },
   "projects": {
-    "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\WebServiceVentas.csproj": {
+    "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\WebServiceVentas.csproj",
+        "projectUniqueName": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj",
         "projectName": "WebServiceVentas",
-        "projectPath": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\WebServiceVentas.csproj",
+        "projectPath": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj",
         "packagesPath": "C:\\Users\\allan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\WebServiceVentas\\obj\\",
+        "outputPath": "C:\\Users\\allan\\Documents\\GoldParser\\Partituras\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -69,10 +69,6 @@
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[8.0.7, )"
-            },
-            "Pomelo.EntityFrameworkCore.MySql": {
-              "target": "Package",
-              "version": "[8.0.3, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
