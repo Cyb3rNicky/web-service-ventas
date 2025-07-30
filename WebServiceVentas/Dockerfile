@@ -16,4 +16,4 @@ EXPOSE 80
 
 ENV ASPNETCORE_URLS=http://+:80
 
-ENTRYPOINT ["dotnet", "web-service-ventas.dll"]
+ENTRYPOINT ["dotnet", "WebServiceVentas.dll"]
