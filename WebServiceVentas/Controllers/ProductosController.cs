@@ -73,7 +73,7 @@ namespace VentasApi.Controllers
 
             existente.Precio = producto.Precio;
             existente.Cantidad = producto.Cantidad;
-            existente.Descripción = producto.Descripción;
+            existente.Descripcion = producto.Descripcion;
 
             try
             {
