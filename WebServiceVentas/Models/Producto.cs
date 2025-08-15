@@ -11,21 +11,21 @@ namespace WebServiceVentas.Models
         [Column("Id")]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "El nombre es obligatorio")]
+        [Required]
         [Column("Nombre")]
         public string Nombre { get; set; } = string.Empty;
 
-        [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor a 0")]
+        [Required]
         [Column("Precio")]
         public decimal Precio { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "La cantidad no puede ser negativa")]
-        [Column("Cantidad")]
-        public int Cantidad { get; set; }
+        [Required]
+        [Column("cantidad")] // minúscula
+        public int cantidad { get; set; }
 
-        [Required(ErrorMessage = "La descripción es obligatoria")]
-        [Column("Descripcion", TypeName = "text")]
+        [Required]
+        [Column("descripcion", TypeName = "text")] // minúscula
         [JsonPropertyName("descripcion")]
-        public string Descripcion { get; set; } = string.Empty;
+        public string descripcion { get; set; } = string.Empty;
     }
 }
