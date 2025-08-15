@@ -16,14 +16,12 @@ namespace VentasApi.Controllers
             _context = context;
         }
 
-        // GET api/productos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
             return await _context.Productos.AsNoTracking().ToListAsync();
         }
 
-        // GET api/productos/{nombre}
         [HttpGet("{nombre}")]
         public async Task<ActionResult<Producto>> GetProducto(string nombre)
         {
@@ -35,13 +33,13 @@ namespace VentasApi.Controllers
             return producto;
         }
 
-        // POST api/productos
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto([FromBody] Producto producto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            // No enviar Id en el POST; la BD lo genera
             _context.Productos.Add(producto);
 
             try
@@ -58,7 +56,6 @@ namespace VentasApi.Controllers
             return CreatedAtAction(nameof(GetProducto), new { nombre = producto.Nombre }, producto);
         }
 
-        // PUT api/productos/{nombre}
         [HttpPut("{nombre}")]
         public async Task<IActionResult> PutProducto(string nombre, [FromBody] Producto producto)
         {
@@ -89,7 +86,6 @@ namespace VentasApi.Controllers
             return NoContent();
         }
 
-        // DELETE api/productos/{nombre}
         [HttpDelete("{nombre}")]
         public async Task<IActionResult> DeleteProducto(string nombre)
         {
