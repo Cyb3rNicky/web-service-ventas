@@ -3,39 +3,38 @@ using WebServiceVentas.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Base de datos
 builder.Services.AddDbContext<VentasDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("PostgresConnection")
     ));
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "80";
-builder.WebHost.UseUrls($"http://*:{port}");
+// Si está en Render (o cualquier hosting que use PORT), usar ese puerto.
+// Si no, dejar que use el puerto del launchSettings.json
+var portVar = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(portVar))
+{
+    builder.WebHost.UseUrls($"http://*:{portVar}");
+}
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
+// Swagger siempre habilitado (puedes condicionar si quieres solo en dev)
+app.UseSwagger();
+app.UseSwaggerUI();
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
+// Migrar DB automáticamente
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<VentasDbContext>();
     db.Database.Migrate();
 }
 
-//app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.MapGet("/", context =>
@@ -47,3 +46,6 @@ app.MapGet("/", context =>
 app.MapGet("/healthz", () => Results.Ok("Healthy"));
 
 app.Run();
+
+// Necesario para pruebas
+public partial class Program { }

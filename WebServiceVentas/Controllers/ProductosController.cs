@@ -33,27 +33,48 @@ namespace VentasApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto(Producto producto)
         {
-            _context.Productos.Add(producto);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetProducto), new { id = producto.Id }, producto);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+        _context.Productos.Add(producto);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetProducto), new { id = producto.Id }, producto);
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProducto(int id, Producto producto)
         {
-            if (id != producto.Id) return BadRequest();
+            if (id != producto.Id)
+            {
+                return BadRequest("El ID de la URL no coincide con el del producto.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Entry(producto).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_context.Productos.Any(e => e.Id == id)) return NotFound();
-                else throw;
+                if (!_context.Productos.Any(e => e.Id == id))
+                    return NotFound();
+
+                throw;
             }
+
             return NoContent();
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProducto(int id)

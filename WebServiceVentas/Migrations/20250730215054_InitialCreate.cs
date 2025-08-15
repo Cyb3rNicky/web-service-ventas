@@ -19,8 +19,8 @@ namespace WebServiceVentas.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Nombre = table.Column<string>(type: "text", nullable: false),
                     Precio = table.Column<decimal>(type: "numeric", nullable: false),
-                    cantidad = table.Column<int>(type: "integer", nullable: false),
-                    descripcion = table.Column<string>(type: "text", nullable: false)
+                    Cantidad = table.Column<int>(type: "integer", nullable: false),
+                    Descripcion = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
