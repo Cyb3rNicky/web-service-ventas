@@ -19,13 +19,10 @@ namespace WebServiceVentas.Models
         [Column("Precio")]
         public decimal Precio { get; set; }
 
-        [Required]
-        [Column("cantidad")] // minúscula
-        public int cantidad { get; set; }
+        [Column("cantidad")]
+        public int Cantidad { get; set; }
 
-        [Required]
-        [Column("descripcion", TypeName = "text")] // minúscula
-        [JsonPropertyName("descripcion")]
-        public string descripcion { get; set; } = string.Empty;
+        [Column("descripcion", TypeName = "text")]
+        public string Descripcion { get; set; } = string.Empty;
     }
 }
