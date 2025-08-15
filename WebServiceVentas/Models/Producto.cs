@@ -4,22 +4,28 @@ using System.Text.Json.Serialization;
 
 namespace WebServiceVentas.Models
 {
+    [Table("productos")] 
     public class Producto
     {
+        [Key]
+        [Column("id")]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "El nombre es obligatorio")]
-        public required string Nombre { get; set; }
+        [Column("nombre")]
+        public string Nombre { get; set; } = string.Empty;
 
         [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor a 0")]
+        [Column("precio")]
         public decimal Precio { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "La cantidad no puede ser negativa")]
+        [Column("cantidad")]
         public int Cantidad { get; set; }
 
         [Required(ErrorMessage = "La descripción es obligatoria")]
-        [Column(TypeName = "text")]
+        [Column("descripcion", TypeName = "text")]
         [JsonPropertyName("descripcion")] 
-        public required string Descripcion { get; set; } 
+        public string Descripcion { get; set; } = string.Empty;
     }
 }
