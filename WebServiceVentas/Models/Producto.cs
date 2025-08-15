@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebServiceVentas.Models
 {
+    [Index(nameof(Nombre), IsUnique = true)]
     public class Producto
     {
         public int Id { get; set; }
@@ -19,6 +21,5 @@ namespace WebServiceVentas.Models
         [Required(ErrorMessage = "La descripción es obligatoria")]
         [Column(TypeName = "text")]
         public required string Descripción { get; set; }
-        
     }
 }
