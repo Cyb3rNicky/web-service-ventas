@@ -1,16 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace WebServiceVentas.Models
 {
-    [Index(nameof(Nombre), IsUnique = true)]
     public class Producto
     {
         public int Id { get; set; }
 
         [Required(ErrorMessage = "El nombre es obligatorio")]
-        public string Nombre { get; set; }
+        public required string Nombre { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "El precio debe ser mayor a 0")]
         public decimal Precio { get; set; }
@@ -20,6 +19,7 @@ namespace WebServiceVentas.Models
 
         [Required(ErrorMessage = "La descripción es obligatoria")]
         [Column(TypeName = "text")]
-        public required string Descripcion { get; set; }
+        [JsonPropertyName("descripcion")] 
+        public required string Descripcion { get; set; } 
     }
 }
