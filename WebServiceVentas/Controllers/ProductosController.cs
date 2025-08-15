@@ -39,7 +39,6 @@ namespace VentasApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // No enviar Id en el POST; la BD lo genera
             _context.Productos.Add(producto);
 
             try
