@@ -13,17 +13,14 @@ namespace WebServiceVentas.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Solo mapear la tabla, las columnas ya se manejan con Data Annotations
             modelBuilder.Entity<Producto>()
-                .ToTable("Productos");
+                        .ToTable("Productos");
 
-            modelBuilder.Entity<Producto>(entity =>
-            {
-                entity.Property(e => e.Id).HasColumnName("Id");
-                entity.Property(e => e.Nombre).HasColumnName("Nombre");
-                entity.Property(e => e.Precio).HasColumnName("Precio");
-                entity.Property(e => e.Cantidad).HasColumnName("Cantidad");
-                entity.Property(e => e.Descripcion).HasColumnName("Descripcion");
-            });
+            // Opcional: definir precisión de Precio
+            modelBuilder.Entity<Producto>()
+                        .Property(p => p.Precio)
+                        .HasPrecision(18, 2);
         }
     }
 }
