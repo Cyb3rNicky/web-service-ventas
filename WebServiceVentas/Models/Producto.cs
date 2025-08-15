@@ -20,6 +20,6 @@ namespace WebServiceVentas.Models
 
         [Required(ErrorMessage = "La descripción es obligatoria")]
         [Column(TypeName = "text")]
-        public required string Descripción { get; set; }
+        public required string Descripcion { get; set; }
     }
 }
