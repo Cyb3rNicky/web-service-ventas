@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\David\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj": {}
+    "C:\\Users\\allan\\Documents\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj": {}
   },
   "projects": {
-    "C:\\Users\\David\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj": {
+    "C:\\Users\\allan\\Documents\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\David\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj",
+        "projectUniqueName": "C:\\Users\\allan\\Documents\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj",
         "projectName": "WebServiceVentas",
-        "projectPath": "C:\\Users\\David\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj",
-        "packagesPath": "C:\\Users\\David\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\David\\web-service-ventas\\WebServiceVentas\\obj\\",
+        "projectPath": "C:\\Users\\allan\\Documents\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj",
+        "packagesPath": "C:\\Users\\allan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\allan\\Documents\\WebServiceVentas\\web-service-ventas\\WebServiceVentas\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\David\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\allan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -50,6 +50,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.18, )"

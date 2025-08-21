@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebServiceVentas.Models;
 
 namespace WebServiceVentas.Data
 {
-    public class VentasDbContext : DbContext
+    public class VentasDbContext : IdentityDbContext<Usuario, IdentityRole<int>, int>
+
     {
         public VentasDbContext(DbContextOptions<VentasDbContext> options) : base(options) { }
 

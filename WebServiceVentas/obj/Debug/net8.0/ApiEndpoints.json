@@ -1,5 +1,37 @@
 [
   {
+    "ContainingType": "WebServiceVentas.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "WebServiceVentas.Controllers.LoginModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.AuthController",
+    "Method": "Register",
+    "RelativePath": "api/auth/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "WebServiceVentas.Controllers.RegisterModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "VentasApi.Controllers.ProductosController",
     "Method": "GetProductos",
     "RelativePath": "api/Productos",
@@ -47,8 +79,8 @@
   },
   {
     "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "GetProducto",
-    "RelativePath": "api/Productos/{id}",
+    "Method": "GetProductoPorId",
+    "RelativePath": "api/Productos/id/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -73,8 +105,8 @@
   },
   {
     "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "PutProducto",
-    "RelativePath": "api/Productos/{id}",
+    "Method": "PutProductoPorId",
+    "RelativePath": "api/Productos/id/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -94,8 +126,8 @@
   },
   {
     "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "DeleteProducto",
-    "RelativePath": "api/Productos/{id}",
+    "Method": "DeleteProductoPorId",
+    "RelativePath": "api/Productos/id/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -107,6 +139,85 @@
       }
     ],
     "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VentasApi.Controllers.ProductosController",
+    "Method": "GetProductoPorNombre",
+    "RelativePath": "api/Productos/nombre/{nombre}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "nombre",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "WebServiceVentas.Models.Producto",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "VentasApi.Controllers.ProductosController",
+    "Method": "PutProductoPorNombre",
+    "RelativePath": "api/Productos/nombre/{nombre}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "nombre",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "producto",
+        "Type": "WebServiceVentas.Models.Producto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "VentasApi.Controllers.ProductosController",
+    "Method": "DeleteProductoPorNombre",
+    "RelativePath": "api/Productos/nombre/{nombre}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "nombre",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_6",
+    "RelativePath": "healthz",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
   },
   {
     "ContainingType": "WebServiceVentas.Controllers.WeatherForecastController",

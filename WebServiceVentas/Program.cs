@@ -1,5 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using WebServiceVentas.Data;
+using WebServiceVentas.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +27,55 @@ if (!string.IsNullOrEmpty(portVar))
     builder.WebHost.UseUrls($"http://*:{portVar}");
 }
 
+//Uso de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
+// Identity y roles
+builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+})
+.AddEntityFrameworkStores<VentasDbContext>()
+.AddDefaultTokenProviders();
+
+// Bearer Auth
+builder.Services.AddAuthentication()
+    .AddBearerToken(IdentityConstants.BearerScheme);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    var jwtConfig = builder.Configuration.GetSection("Jwt");
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtConfig["Issuer"],
+        ValidAudience = jwtConfig["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Key"]))
+    };
+});
+
 var app = builder.Build();
 
-// Swagger siempre habilitado (puedes condicionar si quieres solo en dev)
+// Swagger siempre habilitado 
 app.UseSwagger();
 app.UseSwaggerUI();
+
 
 // Migrar DB automáticamente
 using (var scope = app.Services.CreateScope())
@@ -34,7 +84,12 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+//Configuración de CORS
+app.UseCors("AllowAll");
+
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseAuthentication(); //Autenticacion de usuarios
 app.MapControllers();
 
 app.MapGet("/", context =>
