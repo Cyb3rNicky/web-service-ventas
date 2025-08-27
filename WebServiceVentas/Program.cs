@@ -6,37 +6,47 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Base de datos
+// DB
 builder.Services.AddDbContext<VentasDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("PostgresConnection")
-    ));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Si está en Render (o cualquier hosting que use PORT), usar ese puerto.
-// Si no, dejar que use el puerto del launchSettings.json
+// Render PORT
 var portVar = Environment.GetEnvironmentVariable("PORT");
 if (!string.IsNullOrEmpty(portVar))
 {
     builder.WebHost.UseUrls($"http://*:{portVar}");
 }
 
-//Uso de CORS
+// ===== CORS =====
+// Usa WithOrigins con tus dominios reales.
+// Agrega/quita puertos locales según tu setup (5173/5174).
+var allowedOrigins = new[]
+{
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://TU-SITIO.netlify.app" // <-- cámbialo
+};
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllOrigins",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
+    options.AddPolicy("Frontend", policy =>
+        policy
+            .WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            // Si usarás cookies u otros credenciales del navegador, deja esta línea:
+            // .AllowCredentials()
+            // Si NO usarás credenciales, puedes omitir AllowCredentials().
+    );
 });
 
-// Identity y roles
+// Identity
 builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 {
     options.Password.RequireDigit = true;
@@ -46,18 +56,16 @@ builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 .AddEntityFrameworkStores<VentasDbContext>()
 .AddDefaultTokenProviders();
 
-// Bearer Auth
-builder.Services.AddAuthentication()
-    .AddBearerToken(IdentityConstants.BearerScheme);
-
+// Auth (una sola configuración)
+var jwtConfig = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
+.AddBearerToken(IdentityConstants.BearerScheme)
 .AddJwtBearer(options =>
 {
-    var jwtConfig = builder.Configuration.GetSection("Jwt");
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -72,35 +80,33 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-// Swagger siempre habilitado 
+// Swagger
 app.UseSwagger();
 app.UseSwaggerUI();
 
-
-// Migrar DB automáticamente
+// Migraciones
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<VentasDbContext>();
     db.Database.Migrate();
 }
 
-//Configuración de CORS
-app.UseCors("AllowAll");
+// ===== Aplica CORS ANTES de Auth =====
+app.UseCors("Frontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseAuthentication(); //Autenticacion de usuarios
+
 app.MapControllers();
 
+// Raíz y health
 app.MapGet("/", context =>
 {
     context.Response.Redirect("/swagger");
     return Task.CompletedTask;
 });
-
 app.MapGet("/healthz", () => Results.Ok("Healthy"));
 
 app.Run();
 
-// Necesario para pruebas
 public partial class Program { }
