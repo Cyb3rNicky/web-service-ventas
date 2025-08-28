@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using WebServiceVentas.Data;
 using WebServiceVentas.Models;
 
 namespace VentasApi.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ProductosController : ControllerBase
     {
         private readonly VentasDbContext _context;
@@ -18,27 +19,38 @@ namespace VentasApi.Controllers
 
         // GET: /api/Productos
         [HttpGet]
+        [AllowAnonymous] // si el front no envía token
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
-            return await _context.Productos.AsNoTracking().ToListAsync();
+            var productos = await _context.Productos
+                .AsNoTracking()
+                .ToListAsync();
+
+            return Ok(productos); // siempre 200 con [] si no hay datos
         }
 
         // GET: /api/Productos/id/5
-        [HttpGet("id/{id}")]
+        [HttpGet("id/{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Producto>> GetProductoPorId(int id)
         {
-            var producto = await _context.Productos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
-            if (producto == null) return NotFound();
-            return producto;
+            var producto = await _context.Productos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            return producto is null ? NotFound() : Ok(producto);
         }
 
         // GET: /api/Productos/nombre/Computadora
         [HttpGet("nombre/{nombre}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Producto>> GetProductoPorNombre(string nombre)
         {
-            var producto = await _context.Productos.AsNoTracking().FirstOrDefaultAsync(p => p.Nombre == nombre);
-            if (producto == null) return NotFound();
-            return producto;
+            var producto = await _context.Productos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Nombre == nombre);
+
+            return producto is null ? NotFound() : Ok(producto);
         }
 
         // POST: /api/Productos
@@ -65,7 +77,7 @@ namespace VentasApi.Controllers
         }
 
         // PUT: /api/Productos/id/5
-        [HttpPut("id/{id}")]
+        [HttpPut("id/{id:int}")]
         public async Task<IActionResult> PutProductoPorId(int id, [FromBody] Producto producto)
         {
             if (!ModelState.IsValid)
@@ -128,7 +140,7 @@ namespace VentasApi.Controllers
         }
 
         // DELETE: /api/Productos/id/5
-        [HttpDelete("id/{id}")]
+        [HttpDelete("id/{id:int}")]
         public async Task<IActionResult> DeleteProductoPorId(int id)
         {
             var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id);
