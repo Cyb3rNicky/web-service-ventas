@@ -17,43 +17,46 @@ namespace VentasApi.Controllers
             _context = context;
         }
 
-        // GET: /api/Productos
+        // GET: /api/productos
         [HttpGet]
-        [AllowAnonymous] // si el front no envía token
-        public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
+        [AllowAnonymous]
+        public async Task<IActionResult> GetProductos()
         {
             var productos = await _context.Productos
                 .AsNoTracking()
                 .ToListAsync();
 
-            return Ok(productos); // siempre 200 con [] si no hay datos
+            // Devuelve { data: [...] } para front que hace res.data.data o json.data
+            return Ok(new { data = productos });
         }
 
-        // GET: /api/Productos/id/5
+        // GET: /api/productos/id/5
         [HttpGet("id/{id:int}")]
         [AllowAnonymous]
-        public async Task<ActionResult<Producto>> GetProductoPorId(int id)
+        public async Task<IActionResult> GetProductoPorId(int id)
         {
             var producto = await _context.Productos
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            return producto is null ? NotFound() : Ok(producto);
+            if (producto is null) return NotFound();
+            return Ok(producto);
         }
 
-        // GET: /api/Productos/nombre/Computadora
+        // GET: /api/productos/nombre/Computadora
         [HttpGet("nombre/{nombre}")]
         [AllowAnonymous]
-        public async Task<ActionResult<Producto>> GetProductoPorNombre(string nombre)
+        public async Task<IActionResult> GetProductoPorNombre(string nombre)
         {
             var producto = await _context.Productos
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Nombre == nombre);
 
-            return producto is null ? NotFound() : Ok(producto);
+            if (producto is null) return NotFound();
+            return Ok(producto);
         }
 
-        // POST: /api/Productos
+        // POST: /api/productos
         [HttpPost]
         public async Task<ActionResult<Producto>> PostProducto([FromBody] Producto producto)
         {
@@ -76,7 +79,7 @@ namespace VentasApi.Controllers
             return CreatedAtAction(nameof(GetProductoPorId), new { id = producto.Id }, producto);
         }
 
-        // PUT: /api/Productos/id/5
+        // PUT: /api/productos/id/5
         [HttpPut("id/{id:int}")]
         public async Task<IActionResult> PutProductoPorId(int id, [FromBody] Producto producto)
         {
@@ -108,7 +111,7 @@ namespace VentasApi.Controllers
             return NoContent();
         }
 
-        // PUT: /api/Productos/nombre/Computadora
+        // PUT: /api/productos/nombre/Computadora
         [HttpPut("nombre/{nombre}")]
         public async Task<IActionResult> PutProductoPorNombre(string nombre, [FromBody] Producto producto)
         {
@@ -139,7 +142,7 @@ namespace VentasApi.Controllers
             return NoContent();
         }
 
-        // DELETE: /api/Productos/id/5
+        // DELETE: /api/productos/id/5
         [HttpDelete("id/{id:int}")]
         public async Task<IActionResult> DeleteProductoPorId(int id)
         {
@@ -152,7 +155,7 @@ namespace VentasApi.Controllers
             return NoContent();
         }
 
-        // DELETE: /api/Productos/nombre/Computadora
+        // DELETE: /api/productos/nombre/Computadora
         [HttpDelete("nombre/{nombre}")]
         public async Task<IActionResult> DeleteProductoPorNombre(string nombre)
         {
