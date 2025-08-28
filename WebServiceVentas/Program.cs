@@ -24,26 +24,24 @@ if (!string.IsNullOrEmpty(portVar))
 }
 
 // ===== CORS =====
-// Usa WithOrigins con tus dominios reales.
-// Agrega/quita puertos locales según tu setup (5173/5174).
+// Pon exactamente los orígenes válidos de tu frontend.
 var allowedOrigins = new[]
 {
     "http://localhost:5173",
     "http://localhost:5174",
-    "https://TU-SITIO.netlify.app" // <-- cámbialo
+    "https://modulo-ventas.netlify.app" // <--- dominio real de Netlify
 };
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
+    {
         policy
             .WithOrigins(allowedOrigins)
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            // Si usarás cookies u otros credenciales del navegador, deja esta línea:
-            // .AllowCredentials()
-            // Si NO usarás credenciales, puedes omitir AllowCredentials().
-    );
+            .AllowAnyMethod();
+    });
+
 });
 
 // Identity
