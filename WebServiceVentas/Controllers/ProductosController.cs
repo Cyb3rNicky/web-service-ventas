@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using WebServiceVentas.Data;
 using WebServiceVentas.Models;
 
@@ -22,40 +21,28 @@ namespace VentasApi.Controllers
         [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
-            var productos = await _context.Productos
-                .AsNoTracking()
-                .ToListAsync();
-
-            // Devuelve { data: [...] } para front que hace res.data.data o json.data
+            var productos = await _context.Productos.AsNoTracking().ToListAsync();
             return Ok(new { data = productos });
         }
 
-        [HttpGet("id/{id}")]
+        [HttpGet("{id:int}")]
         [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<Producto>> GetProductoPorId(int id)
         {
-            var producto = await _context.Productos
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (producto is null) return NotFound();
+            var producto = await _context.Productos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+            if (producto == null) return NotFound();
             return Ok(producto);
         }
 
-        // GET: /api/productos/nombre/Computadora
         [HttpGet("nombre/{nombre}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetProductoPorNombre(string nombre)
         {
-            var producto = await _context.Productos
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Nombre == nombre);
-
-            if (producto is null) return NotFound();
+            var producto = await _context.Productos.AsNoTracking().FirstOrDefaultAsync(p => p.Nombre == nombre);
+            if (producto == null) return NotFound();
             return Ok(producto);
         }
 
-        // POST: /api/productos
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Producto>> PostProducto([FromBody] Producto producto)
@@ -68,7 +55,7 @@ namespace VentasApi.Controllers
             return CreatedAtAction(nameof(GetProductoPorId), new { id = producto.Id }, producto);
         }
 
-        [HttpPut("id/{id}")]
+        [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutProductoPorId(int id, [FromBody] Producto producto)
         {
@@ -87,15 +74,11 @@ namespace VentasApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("id/{id}")]
-        [Authorize(Roles = "Admin")]
-        // PUT: /api/productos/nombre/Computadora
         [HttpPut("nombre/{nombre}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutProductoPorNombre(string nombre, [FromBody] Producto producto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
+            if (!ModelState.IsValid) return BadRequest(ModelState);
             if (!string.Equals(nombre, producto.Nombre, StringComparison.Ordinal))
                 return BadRequest("El nombre de la URL no coincide con el del producto.");
 
@@ -106,22 +89,12 @@ namespace VentasApi.Controllers
             existente.Cantidad = producto.Cantidad;
             existente.Descripcion = producto.Descripcion;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await _context.Productos.AnyAsync(p => p.Nombre == nombre))
-                    return NotFound();
-                throw;
-            }
-
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
-        // DELETE: /api/productos/id/5
-        [HttpDelete("id/{id:int}")]
+        [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProductoPorId(int id)
         {
             var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id);
@@ -129,12 +102,11 @@ namespace VentasApi.Controllers
 
             _context.Productos.Remove(producto);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
-        // DELETE: /api/productos/nombre/Computadora
         [HttpDelete("nombre/{nombre}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProductoPorNombre(string nombre)
         {
             var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Nombre == nombre);
@@ -142,7 +114,6 @@ namespace VentasApi.Controllers
 
             _context.Productos.Remove(producto);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }
