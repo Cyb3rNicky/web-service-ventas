@@ -7,7 +7,7 @@ public class VentasDbContextFactory : IDesignTimeDbContextFactory<VentasDbContex
     public VentasDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<VentasDbContext>();
-        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=VentasDb;Username=postgres;Password=root");
+        optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=ventasdb;Username=postgres;Password=postgres123");
 
         return new VentasDbContext(optionsBuilder.Options);
     }

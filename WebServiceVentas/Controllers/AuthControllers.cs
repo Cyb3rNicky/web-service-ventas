@@ -14,35 +14,62 @@ namespace WebServiceVentas.Controllers
     {
         private readonly UserManager<Usuario> _userManager;
         private readonly SignInManager<Usuario> _signInManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
 
-        public AuthController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager)
+        public AuthController(
+            UserManager<Usuario> userManager, 
+            SignInManager<Usuario> signInManager, 
+            RoleManager<IdentityRole<int>> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
         }
 
-        // Registro de usuario
+        // ================= Registro =================
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+public async Task<IActionResult> Register([FromBody] RegisterModel model)
+{
+    // Crear usuario
+    var user = new Usuario
+    {
+        UserName = model.UserName,
+        Email = model.Email,
+        Nombre = model.Nombre,
+        Apellido = model.Apellido
+    };
+
+    var result = await _userManager.CreateAsync(user, model.Password);
+    if (!result.Succeeded)
+        return BadRequest(result.Errors);
+
+    // Crear rol si no existe
+    if (!string.IsNullOrEmpty(model.Role))
+    {
+        if (!await _roleManager.RoleExistsAsync(model.Role))
         {
-            var user = new Usuario
-            {
-                UserName = model.UserName,
-                Email = model.Email,
-                Nombre = model.Nombre,
-                Apellido = model.Apellido
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            // Opcional: agregar a roles si lo deseas aquí
-
-            return Ok(new { user.Id, user.UserName, user.Email, user.Nombre, user.Apellido });
+            var role = new IdentityRole<int> { Name = model.Role };
+            await _roleManager.CreateAsync(role);
         }
 
-        // Login de usuario
+        // Asignar rol al usuario
+        await _userManager.AddToRoleAsync(user, model.Role);
+    }
+
+    return Ok(new
+    {
+        user.Id,
+        user.UserName,
+        user.Email,
+        user.Nombre,
+        user.Apellido,
+        Role = model.Role
+    });
+}
+
+
+
+        // ================= Login =================
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
@@ -51,17 +78,21 @@ namespace WebServiceVentas.Controllers
                 return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
 
             var user = await _userManager.FindByNameAsync(model.UserName);
+            var roles = await _userManager.GetRolesAsync(user);
 
-            // Generar el token JWT
+            // Generar token JWT con roles
             var jwtConfig = HttpContext.RequestServices.GetRequiredService<IConfiguration>().GetSection("Jwt");
-            var claims = new[]
+            var claims = new List<Claim>
             {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-        new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
-        new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
-        new Claim("nombre", user.Nombre ?? ""),
-        new Claim("apellido", user.Apellido ?? "")
-    };
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+                new Claim("nombre", user.Nombre ?? ""),
+                new Claim("apellido", user.Apellido ?? "")
+            };
+
+            // Agregar roles al token
+            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -74,18 +105,15 @@ namespace WebServiceVentas.Controllers
                 signingCredentials: creds
             );
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
             return Ok(new
             {
-                token = tokenString,
-                user = new { user.Id, user.UserName, user.Email, user.Nombre, user.Apellido }
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                user = new { user.Id, user.UserName, user.Email, user.Nombre, user.Apellido, Roles = roles }
             });
         }
-
     }
 
-    // Modelos para los requests
+    // ================= Modelos =================
     public class RegisterModel
     {
         public string UserName { get; set; }
@@ -93,6 +121,7 @@ namespace WebServiceVentas.Controllers
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Password { get; set; }
+        public string Role { get; set; } // <--- Nuevo campo para rol
     }
 
     public class LoginModel

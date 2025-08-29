@@ -182,6 +182,23 @@ namespace WebServiceVentas.Migrations
                     b.ToTable("Productos", (string)null);
                 });
 
+            modelBuilder.Entity("WebServiceVentas.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("WebServiceVentas.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -257,6 +274,21 @@ namespace WebServiceVentas.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("WebServiceVentas.Models.UsuarioRole", b =>
+                {
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UsuarioId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UsuarioRoles");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -306,6 +338,35 @@ namespace WebServiceVentas.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.UsuarioRole", b =>
+                {
+                    b.HasOne("WebServiceVentas.Models.Role", "Role")
+                        .WithMany("UsuarioRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebServiceVentas.Models.Usuario", "Usuario")
+                        .WithMany("UsuarioRoles")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Role", b =>
+                {
+                    b.Navigation("UsuarioRoles");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Usuario", b =>
+                {
+                    b.Navigation("UsuarioRoles");
                 });
 #pragma warning restore 612, 618
         }
