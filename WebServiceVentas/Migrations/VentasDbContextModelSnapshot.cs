@@ -299,7 +299,6 @@ namespace WebServiceVentas.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("WebServiceVentas.Models.UsuarioRole", b =>
                 {
                     b.Property<int>("UsuarioId")
@@ -313,7 +312,7 @@ namespace WebServiceVentas.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UsuarioRoles");
-=======
+                });
             modelBuilder.Entity("WebServiceVentas.Models.Venta", b =>
                 {
                     b.Property<int>("Id")
@@ -365,7 +364,6 @@ namespace WebServiceVentas.Migrations
                     b.HasIndex("VentaId");
 
                     b.ToTable("VentaProductos");
->>>>>>> 43d02bc25f0bed3a47188f3dd0a483349970102b
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -419,7 +417,6 @@ namespace WebServiceVentas.Migrations
                         .IsRequired();
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("WebServiceVentas.Models.UsuarioRole", b =>
                 {
                     b.HasOne("WebServiceVentas.Models.Role", "Role")
@@ -447,7 +444,7 @@ namespace WebServiceVentas.Migrations
             modelBuilder.Entity("WebServiceVentas.Models.Usuario", b =>
                 {
                     b.Navigation("UsuarioRoles");
-=======
+                });
             modelBuilder.Entity("WebServiceVentas.Models.Venta", b =>
                 {
                     b.HasOne("WebServiceVentas.Models.Cliente", "Cliente")
@@ -481,7 +478,6 @@ namespace WebServiceVentas.Migrations
             modelBuilder.Entity("WebServiceVentas.Models.Venta", b =>
                 {
                     b.Navigation("ProductosVendidos");
->>>>>>> 43d02bc25f0bed3a47188f3dd0a483349970102b
                 });
 #pragma warning restore 612, 618
         }
