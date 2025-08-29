@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WebServiceVentas.Data;
@@ -11,9 +12,11 @@ using WebServiceVentas.Data;
 namespace WebServiceVentas.Migrations
 {
     [DbContext(typeof(VentasDbContext))]
-    partial class VentasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250828021321_AddVentas")]
+    partial class AddVentas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -207,23 +210,6 @@ namespace WebServiceVentas.Migrations
                     b.ToTable("Productos", (string)null);
                 });
 
-            modelBuilder.Entity("WebServiceVentas.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-                });
-
             modelBuilder.Entity("WebServiceVentas.Models.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -299,21 +285,6 @@ namespace WebServiceVentas.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("WebServiceVentas.Models.UsuarioRole", b =>
-                {
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("UsuarioId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UsuarioRoles");
-=======
             modelBuilder.Entity("WebServiceVentas.Models.Venta", b =>
                 {
                     b.Property<int>("Id")
@@ -365,7 +336,6 @@ namespace WebServiceVentas.Migrations
                     b.HasIndex("VentaId");
 
                     b.ToTable("VentaProductos");
->>>>>>> 43d02bc25f0bed3a47188f3dd0a483349970102b
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -419,35 +389,6 @@ namespace WebServiceVentas.Migrations
                         .IsRequired();
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("WebServiceVentas.Models.UsuarioRole", b =>
-                {
-                    b.HasOne("WebServiceVentas.Models.Role", "Role")
-                        .WithMany("UsuarioRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebServiceVentas.Models.Usuario", "Usuario")
-                        .WithMany("UsuarioRoles")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("WebServiceVentas.Models.Role", b =>
-                {
-                    b.Navigation("UsuarioRoles");
-                });
-
-            modelBuilder.Entity("WebServiceVentas.Models.Usuario", b =>
-                {
-                    b.Navigation("UsuarioRoles");
-=======
             modelBuilder.Entity("WebServiceVentas.Models.Venta", b =>
                 {
                     b.HasOne("WebServiceVentas.Models.Cliente", "Cliente")
@@ -481,7 +422,6 @@ namespace WebServiceVentas.Migrations
             modelBuilder.Entity("WebServiceVentas.Models.Venta", b =>
                 {
                     b.Navigation("ProductosVendidos");
->>>>>>> 43d02bc25f0bed3a47188f3dd0a483349970102b
                 });
 #pragma warning restore 612, 618
         }

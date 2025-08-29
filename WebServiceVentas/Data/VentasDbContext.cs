@@ -11,6 +11,12 @@ namespace WebServiceVentas.Data
         public VentasDbContext(DbContextOptions<VentasDbContext> options) : base(options) { }
 
         public DbSet<Producto> Productos { get; set; } = null!;
+        
+        public DbSet<Cliente> Clientes { get; set; } = null!;
+
+        public DbSet<Venta> Ventas { get; set; } = null!;
+
+        public DbSet<VentaProducto> VentaProductos { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
