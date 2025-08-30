@@ -26,7 +26,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpGet("{id:int}")]
-        [Authorize(Roles = "Admin,User")]
+        [AllowAnonymous]
         public async Task<ActionResult<Producto>> GetProductoPorId(int id)
         {
             var producto = await _context.Productos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
@@ -44,7 +44,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult<Producto>> PostProducto([FromBody] Producto producto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -56,7 +56,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> PutProductoPorId(int id, [FromBody] Producto producto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -75,7 +75,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpPut("nombre/{nombre}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> PutProductoPorNombre(string nombre, [FromBody] Producto producto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -94,7 +94,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> DeleteProductoPorId(int id)
         {
             var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id);
@@ -106,7 +106,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpDelete("nombre/{nombre}")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<IActionResult> DeleteProductoPorNombre(string nombre)
         {
             var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Nombre == nombre);
