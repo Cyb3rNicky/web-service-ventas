@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // DB
@@ -19,7 +20,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "Ventas API", Version = "v1" });
 
-    // 🔑 Auth con JWT en Swagger
+    // 🔑 Configuración de Auth con JWT
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -46,6 +47,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+
 // Render PORT
 var portVar = Environment.GetEnvironmentVariable("PORT");
 if (!string.IsNullOrEmpty(portVar))
@@ -53,15 +55,25 @@ if (!string.IsNullOrEmpty(portVar))
     builder.WebHost.UseUrls($"http://*:{portVar}");
 }
 
-// ===== CORS (para pruebas: ABIERTO) =====
-// Permite cualquier origen/método/header (no usar con credenciales).
+// ===== CORS =====
+// Pon exactamente los orígenes válidos de tu frontend.
+var allowedOrigins = new[]
+{
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://modulo-ventas.netlify.app" // <--- dominio real de Netlify
+};
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Frontend", p => p
-        .AllowAnyOrigin()
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-    );
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy
+            .WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+
 });
 
 // Identity
