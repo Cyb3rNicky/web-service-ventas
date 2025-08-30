@@ -18,7 +18,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin,User")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
             var productos = await _context.Productos.AsNoTracking().ToListAsync();
