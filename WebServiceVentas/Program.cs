@@ -53,11 +53,12 @@ if (!string.IsNullOrEmpty(portVar))
     builder.WebHost.UseUrls($"http://*:{portVar}");
 }
 
-// ===== CORS (para pruebas: ABIERTO) =====
-// Permite cualquier origen/método/header (no usar con credenciales).
+// ===== CORS (para pruebas: ABIERTO como política por defecto) =====
+// Esto añade una política por defecto que permite cualquier origen/método/header.
+// Es ideal para pruebas y asegura que TODAS las rutas tengan CORS sin tener que recordar el nombre.
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Frontend", p => p
+    options.AddDefaultPolicy(p => p
         .AllowAnyOrigin()
         .AllowAnyHeader()
         .AllowAnyMethod()
@@ -74,7 +75,7 @@ builder.Services.AddIdentity<Usuario, IdentityRole<int>>(options =>
 .AddEntityFrameworkStores<VentasDbContext>()
 .AddDefaultTokenProviders();
 
-// Auth (una sola configuración)
+// Auth
 var jwtConfig = builder.Configuration.GetSection("Jwt");
 builder.Services.AddAuthentication(options =>
 {
@@ -84,7 +85,7 @@ builder.Services.AddAuthentication(options =>
 .AddBearerToken(IdentityConstants.BearerScheme)
 .AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
@@ -109,8 +110,9 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-// ===== Aplica CORS ANTES de Auth =====
-app.UseCors("Frontend");
+// ===== CORS ANTES de Auth =====
+// Al no pasar nombre, usa la política por defecto (la abierta).
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
