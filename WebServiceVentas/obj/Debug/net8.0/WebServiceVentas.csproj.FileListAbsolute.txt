@@ -470,7 +470,6 @@ C:\Users\allan\Documents\WebServiceVentas\web-service-ventas\WebServiceVentas\bi
 C:\Users\allan\Documents\WebServiceVentas\web-service-ventas\WebServiceVentas\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\allan\Documents\WebServiceVentas\web-service-ventas\WebServiceVentas\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
 C:\Users\allan\Documents\WebServiceVentas\web-service-ventas\WebServiceVentas\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
-C:\Users\David\OneDrive\Documentos\2do semestre 2025\Analisis de Sistemas 2\proyectofinaldecurso\web-service-ventas\WebServiceVentas\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\David\OneDrive\Documentos\2do semestre 2025\Analisis de Sistemas 2\proyectofinaldecurso\web-service-ventas\WebServiceVentas\bin\Debug\net8.0\appsettings.json
 C:\Users\David\OneDrive\Documentos\2do semestre 2025\Analisis de Sistemas 2\proyectofinaldecurso\web-service-ventas\WebServiceVentas\bin\Debug\net8.0\WebServiceVentas.staticwebassets.endpoints.json
 C:\Users\David\OneDrive\Documentos\2do semestre 2025\Analisis de Sistemas 2\proyectofinaldecurso\web-service-ventas\WebServiceVentas\bin\Debug\net8.0\WebServiceVentas.exe
@@ -597,3 +596,4 @@ C:\Users\David\OneDrive\Documentos\2do semestre 2025\Analisis de Sistemas 2\proy
 C:\Users\David\OneDrive\Documentos\2do semestre 2025\Analisis de Sistemas 2\proyectofinaldecurso\web-service-ventas\WebServiceVentas\obj\Debug\net8.0\WebServiceVentas.pdb
 C:\Users\David\OneDrive\Documentos\2do semestre 2025\Analisis de Sistemas 2\proyectofinaldecurso\web-service-ventas\WebServiceVentas\obj\Debug\net8.0\WebServiceVentas.genruntimeconfig.cache
 C:\Users\David\OneDrive\Documentos\2do semestre 2025\Analisis de Sistemas 2\proyectofinaldecurso\web-service-ventas\WebServiceVentas\obj\Debug\net8.0\ref\WebServiceVentas.dll
+C:\Users\David\OneDrive\Documentos\2do semestre 2025\Analisis de Sistemas 2\proyectofinaldecurso\web-service-ventas\WebServiceVentas\bin\Debug\net8.0\appsettings.Develoment.json
