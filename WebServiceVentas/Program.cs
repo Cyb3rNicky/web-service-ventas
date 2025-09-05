@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using WebServiceVentas;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -97,6 +98,22 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
+builder.Services.AddAuthorization(options =>
+{
+    // Política para admin: solo usuarios con rol admin
+    options.AddPolicy("AdminOnly", policy => 
+        policy.RequireRole("admin"));
+    
+    // Política para vendedor: usuarios con rol vendedor o admin
+    options.AddPolicy("VendedorOrAdmin", policy => 
+        policy.RequireRole("vendedor", "admin"));
+    
+    // Política para cualquier usuario autenticado
+    options.AddPolicy("Authenticated", policy => 
+        policy.RequireAuthenticatedUser());
+});
+
 var app = builder.Build();
 
 // Swagger
@@ -108,6 +125,47 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<VentasDbContext>();
     db.Database.Migrate();
+
+    // 🔹 Inicializar roles
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+    await RoleSeeder.SeedRolesAsync(roleManager);
+
+    // 🔹 CREAR USUARIO ADMIN POR DEFECTO SI NO EXISTE
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Usuario>>();
+    var adminUser = await userManager.FindByNameAsync("admin");
+    
+    if (adminUser == null)
+    {
+        var user = new Usuario
+        {
+            UserName = "admin",
+            Email = "admin@ventas.com",
+            Nombre = "Administrador",
+            Apellido = "Sistema"
+        };
+        
+        var result = await userManager.CreateAsync(user, "AdminPassword123!");
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(user, "admin");
+            Console.WriteLine("✅ Usuario admin creado:");
+            Console.WriteLine("📧 Usuario: admin");
+            Console.WriteLine("🔑 Password: AdminPassword123!");
+            Console.WriteLine("⚠️  CAMBIA ESTE PASSWORD INMEDIATAMENTE!");
+        }
+        else
+        {
+            Console.WriteLine("❌ Error creando usuario admin:");
+            foreach (var error in result.Errors)
+            {
+                Console.WriteLine($"- {error.Description}");
+            }
+        }
+    }
+    else
+    {
+        Console.WriteLine("✅ Usuario admin ya existe");
+    }
 }
 
 // ===== CORS ANTES de Auth =====

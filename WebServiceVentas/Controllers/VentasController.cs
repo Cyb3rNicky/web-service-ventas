@@ -8,6 +8,7 @@ namespace WebServiceVentas.Controllers
 {
     [ApiController]
     [Route("api/ventas")]
+    [Authorize(Policy = "VendedorOrAdmin")] // Solo vendedores y admin
     public class VentasController : ControllerBase
     {
         private readonly VentasDbContext _context;

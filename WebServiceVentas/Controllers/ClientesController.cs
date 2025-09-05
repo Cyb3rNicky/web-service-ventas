@@ -8,6 +8,7 @@ namespace WebServiceVentas.Controllers
 {
     [ApiController]
     [Route("api/clientes")] // minúsculas
+    [Authorize(Policy = "VendedorOrAdmin")] // Aplicar política general
     public class ClientesController : ControllerBase
     {
         private readonly VentasDbContext _context;
@@ -17,8 +18,9 @@ namespace WebServiceVentas.Controllers
             _context = context;
         }
 
-        // POST: /api/clientes
+        // POST: /api/clientes - solo admin
         [HttpPost]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> PostCliente([FromBody] Cliente cliente)
         {
             if (!ModelState.IsValid)
@@ -33,7 +35,7 @@ namespace WebServiceVentas.Controllers
 
         // GET: /api/clientes
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Policy = "Authenticated")]
         public async Task<IActionResult> GetClientes()
         {
             var clientes = await _context.Clientes
@@ -45,7 +47,7 @@ namespace WebServiceVentas.Controllers
 
         // GET: /api/clientes/nombre/{nombre}
         [HttpGet("nombre/{nombre}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "Authenticated")]
         public async Task<IActionResult> GetPorNombre(string nombre)
         {
             var clientes = await _context.Clientes
@@ -58,7 +60,7 @@ namespace WebServiceVentas.Controllers
 
         // GET: /api/clientes/nit/{nit}
         [HttpGet("nit/{nit}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "Authenticated")]
         public async Task<IActionResult> GetPorNit(string nit)
         {
             var cliente = await _context.Clientes
@@ -73,7 +75,7 @@ namespace WebServiceVentas.Controllers
 
         // GET: /api/clientes/{id}
         [HttpGet("{id:int}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "Authenticated")]
         public async Task<IActionResult> GetClienteById(int id)
         {
             var cliente = await _context.Clientes

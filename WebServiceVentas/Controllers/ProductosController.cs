@@ -8,6 +8,7 @@ namespace VentasApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Policy = "VendedorOrAdmin")] // Aplicar política general
     public class ProductosController : ControllerBase
     {
         private readonly VentasDbContext _context;
@@ -17,16 +18,16 @@ namespace VentasApi.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        [AllowAnonymous]
+        [HttpGet]  //--todos los autenticados
+        [Authorize(Policy = "Authenticated")]
         public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
         {
             var productos = await _context.Productos.AsNoTracking().ToListAsync();
             return Ok(new { data = productos });
         }
 
-        [HttpGet("{id:int}")]
-        [AllowAnonymous]
+        [HttpGet("{id:int}")] //--todos los autenticados
+        [Authorize(Policy = "Authenticated")]
         public async Task<ActionResult<Producto>> GetProductoPorId(int id)
         {
             var producto = await _context.Productos.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
@@ -34,8 +35,8 @@ namespace VentasApi.Controllers
             return Ok(producto);
         }
 
-        [HttpGet("nombre/{nombre}")]
-        [AllowAnonymous]
+        [HttpGet("nombre/{nombre}")]  //--todos los autenticados
+        [Authorize(Policy = "Authenticated")]
         public async Task<IActionResult> GetProductoPorNombre(string nombre)
         {
             var producto = await _context.Productos.AsNoTracking().FirstOrDefaultAsync(p => p.Nombre == nombre);
@@ -44,7 +45,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Policy = "AdminOnly")] //--solo admin
         public async Task<ActionResult<Producto>> PostProducto([FromBody] Producto producto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -56,7 +57,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "AdminOnly")] //--solo admin
         public async Task<IActionResult> PutProductoPorId(int id, [FromBody] Producto producto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -75,7 +76,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpPut("nombre/{nombre}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "AdminOnly")] //--solo admin
         public async Task<IActionResult> PutProductoPorNombre(string nombre, [FromBody] Producto producto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -94,7 +95,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "AdminOnly")] //--solo admin
         public async Task<IActionResult> DeleteProductoPorId(int id)
         {
             var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Id == id);
@@ -106,7 +107,7 @@ namespace VentasApi.Controllers
         }
 
         [HttpDelete("nombre/{nombre}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "AdminOnly")] //--solo admin
         public async Task<IActionResult> DeleteProductoPorNombre(string nombre)
         {
             var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Nombre == nombre);
