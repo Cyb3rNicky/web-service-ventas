@@ -1,0 +1,29 @@
+using Microsoft.EntityFrameworkCore;
+using WebServiceVentas.Data;
+using WebServiceVentas.Models;
+
+namespace WebServiceVentas.Services;
+
+public class CotizacionService
+{
+    private readonly VentasDbContext _db;
+    public CotizacionService(VentasDbContext db) => _db = db;
+
+    public async Task RecalcularTotalAsync(int cotizacionId, CancellationToken ct = default)
+    {
+        var items = await _db.CotizacionItems
+            .Where(i => i.CotizacionId == cotizacionId)
+            .ToListAsync(ct);
+
+        foreach (var i in items)
+        {
+            i.Total = (i.Cantidad * i.PrecioUnitario) - i.Descuento;
+            if (i.Total < 0) i.Total = 0;
+        }
+
+        var total = items.Sum(i => i.Total);
+        var cot = await _db.Cotizaciones.FirstAsync(c => c.Id == cotizacionId, ct);
+        cot.Total = total;
+        await _db.SaveChangesAsync(ct);
+    }
+}
