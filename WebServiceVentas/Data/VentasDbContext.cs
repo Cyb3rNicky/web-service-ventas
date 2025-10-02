@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebServiceVentas.Models;
 
@@ -14,12 +12,10 @@ public partial class VentasDbContext
     public DbSet<CotizacionItem> CotizacionItems => Set<CotizacionItem>();
     public DbSet<Factura> Facturas => Set<Factura>();
 
-    // EXTENSIÓN del método OnModelCreating en un partial (opcional) para no ensuciar el archivo original.
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Precisión global (ya tienes para Producto, replicar)
         modelBuilder.Entity<Cotizacion>()
             .Property(c => c.Total)
             .HasPrecision(18, 2);
@@ -29,8 +25,6 @@ public partial class VentasDbContext
             b.Property(i => i.PrecioUnitario).HasPrecision(18, 2);
             b.Property(i => i.Descuento).HasPrecision(18, 2);
             b.Property(i => i.Total).HasPrecision(18, 2);
-
-            // Evitar duplicados de (Cotizacion, Vehiculo)
             b.HasIndex(i => new { i.CotizacionId, i.VehiculoId }).IsUnique();
         });
 
@@ -48,7 +42,7 @@ public partial class VentasDbContext
              .OnDelete(DeleteBehavior.Restrict);
 
             b.HasOne(o => o.Usuario)
-             .WithMany() // Si luego quieres Usuario.Oportunidades cambia a ICollection<Oportunidad>
+             .WithMany()
              .HasForeignKey(o => o.UsuarioId)
              .OnDelete(DeleteBehavior.Restrict);
 
