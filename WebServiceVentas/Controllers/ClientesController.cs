@@ -8,7 +8,7 @@ namespace WebServiceVentas.Controllers;
 
 [ApiController]
 [Route("api/clientes")]
-[Authorize(Policy = "VendedorOrAdmin")]
+[Authorize(Policy = "admin,gerente,vendedor,asistente")]
 public class ClientesController : ControllerBase
 {
     private readonly VentasDbContext _context;
@@ -18,15 +18,13 @@ public class ClientesController : ControllerBase
         _context = context;
     }
 
-    private IQueryable<Cliente> QueryClientes => _context.Set<Cliente>().AsQueryable();
-
     [HttpPost]
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "admin,gerente,vendedor")]
     public async Task<IActionResult> PostCliente([FromBody] Cliente cliente, CancellationToken ct)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        _context.Set<Cliente>().Add(cliente);
+        _context.Clientes.Add(cliente);
         await _context.SaveChangesAsync(ct);
 
         return CreatedAtAction(nameof(GetClienteById), new { id = cliente.Id }, new { data = cliente });
@@ -36,7 +34,18 @@ public class ClientesController : ControllerBase
     [Authorize(Policy = "Authenticated")]
     public async Task<IActionResult> GetClientes(CancellationToken ct)
     {
-        var clientes = await QueryClientes.AsNoTracking().ToListAsync(ct);
+        var clientes = await _context.Clientes
+            .AsNoTracking()
+            .Select(c => new
+            {
+                c.Id,
+                c.Nombre,
+                c.NIT,
+                c.Direccion,
+                OportunidadesCount = _context.Oportunidades.Count(o => o.ClienteId == c.Id) //Contar oportunidades desde la tabla Oportunidades
+            })
+            .ToListAsync(ct);
+
         return Ok(new { data = clientes });
     }
 
@@ -44,9 +53,9 @@ public class ClientesController : ControllerBase
     [Authorize(Policy = "Authenticated")]
     public async Task<IActionResult> GetPorNombre(string nombre, CancellationToken ct)
     {
-        var clientes = await QueryClientes
+        var clientes = await _context.Clientes
             .AsNoTracking()
-            .Where(c => c.Nombre == nombre)
+            .Where(c => c.Nombre.Contains(nombre))
             .ToListAsync(ct);
 
         return Ok(new { data = clientes });
@@ -56,7 +65,7 @@ public class ClientesController : ControllerBase
     [Authorize(Policy = "Authenticated")]
     public async Task<IActionResult> GetPorNit(string nit, CancellationToken ct)
     {
-        var cliente = await QueryClientes
+        var cliente = await _context.Clientes
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.NIT == nit, ct);
 
@@ -68,11 +77,50 @@ public class ClientesController : ControllerBase
     [Authorize(Policy = "Authenticated")]
     public async Task<IActionResult> GetClienteById(int id, CancellationToken ct)
     {
-        var cliente = await QueryClientes
+        var cliente = await _context.Clientes
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == id, ct);
 
         if (cliente == null) return NotFound();
         return Ok(new { data = cliente });
+    }
+
+    [HttpPut("{id:int}")]
+    [Authorize(Policy = "admin,gerente,vendedor")]
+    public async Task<IActionResult> PutCliente(int id, [FromBody] Cliente cliente, CancellationToken ct)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+        if (id != cliente.Id) return BadRequest("El Id no coincide");
+
+        var existente = await _context.Clientes.FirstOrDefaultAsync(c => c.Id == id, ct);
+        if (existente == null) return NotFound();
+
+        existente.Nombre = cliente.Nombre;
+        existente.NIT = cliente.NIT;
+        existente.Direccion = cliente.Direccion;
+
+        await _context.SaveChangesAsync(ct);
+        return NoContent();
+    }
+
+    [HttpDelete("{id:int}")]
+    [Authorize(Policy = "admin,gerente")]
+    public async Task<IActionResult> DeleteCliente(int id, CancellationToken ct)
+    {
+        var cliente = await _context.Clientes
+            .FirstOrDefaultAsync(c => c.Id == id, ct);
+
+        if (cliente == null) return NotFound();
+
+        // CORRECCIÓN: Verificar oportunidades directamente desde la tabla Oportunidades
+        var tieneOportunidades = await _context.Oportunidades
+            .AnyAsync(o => o.ClienteId == id, ct);
+
+        if (tieneOportunidades)
+            return BadRequest("No se puede eliminar el cliente porque tiene oportunidades asociadas");
+
+        _context.Clientes.Remove(cliente);
+        await _context.SaveChangesAsync(ct);
+        return NoContent();
     }
 }

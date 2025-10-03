@@ -30,7 +30,7 @@ namespace WebServiceVentas.Controllers
 
         // ================= Registro =================
         [HttpPost("register")]
-        [Authorize(Policy = "AdminOnly")] // SOLO ADMINS PUEDEN REGISTRAR
+        [Authorize(Policy = "admin,gerente")] // SOLO ADMINS PUEDEN REGISTRAR
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             // Validar que solo admins puedan crear otros admins

@@ -8,7 +8,7 @@ namespace WebServiceVentas.Controllers;
 
 [ApiController]
 [Route("api/ventas")]
-[Authorize(Policy = "VendedorOrAdmin")]
+[Authorize(Policy = "admin,gerente,vendedor")]
 public class VentasController : ControllerBase
 {
     private readonly VentasDbContext _context;
@@ -31,6 +31,7 @@ public class VentasController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin,gerente,vendedor")]
     public async Task<IActionResult> CrearVenta([FromBody] VentaRequest request, CancellationToken ct)
     {
         if (request.Productos.Count == 0)
@@ -98,7 +99,7 @@ public class VentasController : ControllerBase
     }
 
     [HttpGet]
-    [AllowAnonymous]
+    [Authorize(Roles = "admin,gerente,vendedor,asistente")]
     public async Task<IActionResult> GetVentas(CancellationToken ct)
     {
         var ventas = await _context.Set<Venta>()
@@ -127,6 +128,7 @@ public class VentasController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [Authorize(Roles = "admin,gerente,vendedor,asistente")]
     public async Task<IActionResult> GetVentaPorId(int id, CancellationToken ct)
     {
         var venta = await _context.Set<Venta>()

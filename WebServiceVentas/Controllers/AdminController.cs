@@ -23,9 +23,9 @@ namespace WebServiceVentas.Controllers
 
         // GET: api/admin/usuarios
         [HttpGet("usuarios")]
-        public IActionResult GetUsuarios()
+        public async Task<IActionResult> GetUsuarios()
         {
-            var usuarios = _userManager.Users
+            var usuarios = await _userManager.Users
                 .Select(u => new
                 {
                     u.Id,
@@ -33,12 +33,76 @@ namespace WebServiceVentas.Controllers
                     u.Email,
                     u.Nombre,
                     u.Apellido
+                    // 🔹 PhoneNumber eliminado
                 })
-                .ToList();
+                .ToListAsync();
 
-            return Ok(usuarios);
+            return Ok(new { data = usuarios });
         }
 
+        // GET: api/admin/usuarios/{id}
+        [HttpGet("usuarios/{id:int}")]
+        public async Task<IActionResult> GetUsuarioPorId(int id)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+                return NotFound(new { message = "Usuario no encontrado" });
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var usuarioDto = new
+            {
+                user.Id,
+                user.UserName,
+                user.Email,
+                user.Nombre,
+                user.Apellido,
+                // 🔹 PhoneNumber eliminado
+                Roles = roles
+            };
+
+            return Ok(new { data = usuarioDto });
+        }
+
+        // PUT: api/admin/usuarios/{id}
+        [HttpPut("usuarios/{id:int}")]
+        public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] AdminUpdateUserRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user == null)
+                return NotFound(new { message = "Usuario no encontrado" });
+
+            // Actualizar propiedades
+            if (!string.IsNullOrEmpty(request.Nombre))
+                user.Nombre = request.Nombre;
+
+            if (!string.IsNullOrEmpty(request.Apellido))
+                user.Apellido = request.Apellido;
+
+            if (!string.IsNullOrEmpty(request.Email))
+                user.Email = request.Email;
+
+            // 🔹 PhoneNumber eliminado del update
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description);
+                return BadRequest(new { message = "Error al actualizar el usuario", errors });
+            }
+
+            return Ok(new { 
+                message = "Usuario actualizado correctamente", 
+                data = new { 
+                    user.Id, 
+                    user.UserName, 
+                    user.Email, 
+                    user.Nombre, 
+                    user.Apellido
+                    // 🔹 PhoneNumber eliminado
+                } 
+            });
+        }
 
         // DELETE: api/admin/usuarios/{id}
         [HttpDelete("usuarios/{id:int}")]
@@ -48,13 +112,20 @@ namespace WebServiceVentas.Controllers
             if (user == null)
                 return NotFound(new { message = "Usuario no encontrado" });
 
-            // 🔹 Quitamos la validación de ventas
-
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
             return Ok(new { message = "Usuario eliminado correctamente" });
         }
+    }
+
+    // 🔹 PhoneNumber eliminado del request también
+    public class AdminUpdateUserRequest
+    {
+        public string? Nombre { get; set; }
+        public string? Apellido { get; set; }
+        public string? Email { get; set; }
+        // 🔹 PhoneNumber eliminado
     }
 }

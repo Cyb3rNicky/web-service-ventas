@@ -8,7 +8,7 @@ namespace WebServiceVentas.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Policy = "VendedorOrAdmin")]
+[Authorize(Policy = "admin,gerente,vendedor,inventario,asistente")]
 public class ProductosController : ControllerBase
 {
     private readonly VentasDbContext _context;
@@ -47,7 +47,7 @@ public class ProductosController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "admin,inventario")]
     public async Task<IActionResult> PostProducto([FromBody] Producto producto, CancellationToken ct)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -59,11 +59,11 @@ public class ProductosController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "admin,inventario")]
     public async Task<IActionResult> PutProductoPorId(int id, [FromBody] Producto producto, CancellationToken ct)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        if (id != producto.Id) return BadRequest("El Id no coincide.");
+        if (id != producto.Id) return BadRequest("El Id no coincide");
 
         var existente = await _context.Set<Producto>().FirstOrDefaultAsync(p => p.Id == id, ct);
         if (existente == null) return NotFound();
@@ -78,7 +78,7 @@ public class ProductosController : ControllerBase
     }
 
     [HttpPut("nombre/{nombre}")]
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "admin,inventario")]
     public async Task<IActionResult> PutProductoPorNombre(string nombre, [FromBody] Producto producto, CancellationToken ct)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
