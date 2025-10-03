@@ -1,195 +1,158 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using WebServiceVentas.Data;
 using WebServiceVentas.Models;
 
-namespace WebServiceVentas.Controllers
+namespace WebServiceVentas.Controllers;
+
+[ApiController]
+[Route("api/ventas")]
+[Authorize(Policy = "VendedorOrAdmin")]
+public class VentasController : ControllerBase
 {
-    [ApiController]
-    [Route("api/ventas")]
-    [Authorize(Policy = "VendedorOrAdmin")] // Solo vendedores y admin
-    public class VentasController : ControllerBase
+    private readonly VentasDbContext _context;
+
+    public VentasController(VentasDbContext context)
     {
-        private readonly VentasDbContext _context;
+        _context = context;
+    }
 
-        public VentasController(VentasDbContext context)
+    public class VentaRequest
+    {
+        public int ClienteId { get; set; }
+        public List<ProductoVentaRequest> Productos { get; set; } = new();
+    }
+
+    public class ProductoVentaRequest
+    {
+        public int ProductoId { get; set; }
+        public int Cantidad { get; set; }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CrearVenta([FromBody] VentaRequest request, CancellationToken ct)
+    {
+        if (request.Productos.Count == 0)
+            return BadRequest("Debe incluir al menos un producto.");
+
+        var cliente = await _context.Set<Cliente>().FindAsync(new object[] { request.ClienteId }, ct);
+        if (cliente == null)
+            return BadRequest("Cliente no encontrado.");
+
+        decimal total = 0m;
+
+        var venta = new Venta
         {
-            _context = context;
-        }
+            ClienteId = cliente.Id,
+            Fecha = DateTime.UtcNow,
+            ProductosVendidos = new List<VentaProducto>()
+        };
 
-        public class VentaRequest
+        foreach (var prodReq in request.Productos)
         {
-            public int ClienteId { get; set; }
-            public List<ProductoVentaRequest> Productos { get; set; } = new();
-        }
+            var producto = await _context.Set<Producto>().FindAsync(new object[] { prodReq.ProductoId }, ct);
+            if (producto == null)
+                return BadRequest($"Producto {prodReq.ProductoId} no existe.");
+            if (producto.Cantidad < prodReq.Cantidad)
+                return BadRequest($"Stock insuficiente para el producto {producto.Nombre} (stock: {producto.Cantidad}).");
 
-        public class ProductoVentaRequest
-        {
-            public int ProductoId { get; set; }
-            public int Cantidad { get; set; }
-        }
+            producto.Cantidad -= prodReq.Cantidad;
 
-        // POST: /api/ventas
-        [HttpPost]
-        public async Task<IActionResult> CrearVenta([FromBody] VentaRequest request)
-        {
-            var cliente = await _context.Clientes.FindAsync(request.ClienteId);
-            if (cliente == null)
-                return BadRequest("Cliente no encontrado.");
-
-            decimal total = 0m;
-
-            var venta = new Venta
+            var vp = new VentaProducto
             {
-                ClienteId = cliente.Id,
-                Fecha = DateTime.UtcNow,
-                ProductosVendidos = new List<VentaProducto>()
+                ProductoId = producto.Id,
+                Cantidad = prodReq.Cantidad,
+                PrecioUnitario = producto.Precio
             };
 
-            foreach (var prodReq in request.Productos)
-            {
-                var producto = await _context.Productos.FindAsync(prodReq.ProductoId);
-                if (producto == null)
-                    return BadRequest($"Producto {prodReq.ProductoId} no existe.");
-                if (producto.Cantidad < prodReq.Cantidad)
-                    return BadRequest($"Stock insuficiente para el producto {producto.Nombre}.");
-
-                producto.Cantidad -= prodReq.Cantidad;
-
-                var vp = new VentaProducto
-                {
-                    ProductoId = producto.Id,
-                    Cantidad = prodReq.Cantidad,
-                    PrecioUnitario = producto.Precio
-                };
-
-                venta.ProductosVendidos.Add(vp);
-                total += producto.Precio * prodReq.Cantidad;
-            }
-
-            venta.Total = total;
-            _context.Ventas.Add(venta);
-            await _context.SaveChangesAsync();
-
-            var ventaDto = new
-            {
-                venta.Id,
-                Fecha = venta.Fecha.ToString("yyyy-MM-dd"),
-                Cliente = new
-                {
-                    cliente.Id,
-                    cliente.Nombre,
-                    cliente.NIT,
-                    cliente.Direccion
-                },
-                venta.Total,
-                Productos = venta.ProductosVendidos.Select(vp => new
-                {
-                    vp.ProductoId,
-                    vp.Cantidad,
-                    vp.PrecioUnitario
-                })
-            };
-
-            // Mismo formato: { data: { ... } }
-            return Ok(new { data = ventaDto });
+            venta.ProductosVendidos.Add(vp);
+            total += producto.Precio * prodReq.Cantidad;
         }
 
-        // GET: /api/ventas
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetVentas()
+        venta.Total = total;
+        _context.Set<Venta>().Add(venta);
+        await _context.SaveChangesAsync(ct);
+
+        var ventaDto = new
         {
-            var ventas = await _context.Ventas
-                .AsNoTracking()
-                .Include(v => v.Cliente)
-                .Include(v => v.ProductosVendidos)
-                    .ThenInclude(vp => vp.Producto)
-                .ToListAsync();
-
-            var resultado = ventas.Select(v => new
+            venta.Id,
+            Fecha = venta.Fecha.ToString("yyyy-MM-dd"),
+            Cliente = new
             {
-                v.Id,
-                Fecha = v.Fecha.ToString("yyyy-MM-dd"),
-                Cliente = new { v.Cliente.Id, v.Cliente.Nombre, v.Cliente.NIT, v.Cliente.Direccion },
-                v.Total,
-                Productos = v.ProductosVendidos.Select(pv => new
-                {
-                    pv.ProductoId,
-                    Nombre = pv.Producto.Nombre,
-                    pv.Cantidad,
-                    pv.PrecioUnitario
-                })
-            }).ToList();
+                cliente.Id,
+                cliente.Nombre,
+                cliente.NIT,
+                cliente.Direccion
+            },
+            venta.Total,
+            Productos = venta.ProductosVendidos.Select(vp => new
+            {
+                vp.ProductoId,
+                vp.Cantidad,
+                vp.PrecioUnitario
+            })
+        };
 
-            // Siempre { data: [...] } (vacío = [])
-            return Ok(new { data = resultado });
-        }
+        return Ok(new { data = ventaDto });
+    }
 
-        // GET: /api/ventas/{id}
-        [HttpGet("{id:int}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetVentaPorId(int id)
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetVentas(CancellationToken ct)
+    {
+        var ventas = await _context.Set<Venta>()
+            .AsNoTracking()
+            .Include(v => v.Cliente)
+            .Include(v => v.ProductosVendidos)
+                .ThenInclude(vp => vp.Producto)
+            .ToListAsync(ct);
+
+        var resultado = ventas.Select(v => new
         {
-            var v = await _context.Ventas
-                .AsNoTracking()
-                .Include(x => x.Cliente)
-                .Include(x => x.ProductosVendidos)
-                    .ThenInclude(vp => vp.Producto)
-                .FirstOrDefaultAsync(x => x.Id == id);
-
-            if (v is null) return NotFound();
-
-            var dto = new
+            v.Id,
+            Fecha = v.Fecha.ToString("yyyy-MM-dd"),
+            Cliente = new { v.Cliente.Id, v.Cliente.Nombre, v.Cliente.NIT, v.Cliente.Direccion },
+            v.Total,
+            Productos = v.ProductosVendidos.Select(pv => new
             {
-                v.Id,
-                Fecha = v.Fecha.ToString("yyyy-MM-dd"),
-                Cliente = new { v.Cliente.Id, v.Cliente.Nombre, v.Cliente.NIT, v.Cliente.Direccion },
-                v.Total,
-                Productos = v.ProductosVendidos.Select(pv => new
-                {
-                    pv.ProductoId,
-                    Nombre = pv.Producto.Nombre,
-                    pv.Cantidad,
-                    pv.PrecioUnitario
-                })
-            };
+                pv.ProductoId,
+                Nombre = pv.Producto.Nombre,
+                pv.Cantidad,
+                pv.PrecioUnitario
+            })
+        }).ToList();
 
-            // Mismo shape: { data: { ... } }
-            return Ok(new { data = dto });
-        }
+        return Ok(new { data = resultado });
+    }
 
-        // GET: /api/ventas/cliente/{clienteId}
-        [HttpGet("cliente/{clienteId:int}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetVentasPorCliente(int clienteId)
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetVentaPorId(int id, CancellationToken ct)
+    {
+        var venta = await _context.Set<Venta>()
+            .AsNoTracking()
+            .Include(v => v.Cliente)
+            .Include(v => v.ProductosVendidos)
+                .ThenInclude(vp => vp.Producto)
+            .FirstOrDefaultAsync(v => v.Id == id, ct);
+
+        if (venta == null) return NotFound();
+
+        var dto = new
         {
-            var ventas = await _context.Ventas
-                .AsNoTracking()
-                .Where(v => v.ClienteId == clienteId)
-                .Include(v => v.Cliente)
-                .Include(v => v.ProductosVendidos)
-                    .ThenInclude(vp => vp.Producto)
-                .ToListAsync();
-
-            var resultado = ventas.Select(v => new
+            venta.Id,
+            Fecha = venta.Fecha.ToString("yyyy-MM-dd"),
+            Cliente = new { venta.Cliente.Id, venta.Cliente.Nombre, venta.Cliente.NIT, venta.Cliente.Direccion },
+            venta.Total,
+            Productos = venta.ProductosVendidos.Select(pv => new
             {
-                v.Id,
-                Fecha = v.Fecha.ToString("yyyy-MM-dd"),
-                Cliente = new { v.Cliente.Id, v.Cliente.Nombre, v.Cliente.NIT, v.Cliente.Direccion },
-                v.Total,
-                Productos = v.ProductosVendidos.Select(pv => new
-                {
-                    pv.ProductoId,
-                    Nombre = pv.Producto.Nombre,
-                    pv.Cantidad,
-                    pv.PrecioUnitario
-                })
-            }).ToList();
+                pv.ProductoId,
+                Nombre = pv.Producto.Nombre,
+                pv.Cantidad,
+                pv.PrecioUnitario
+            })
+        };
 
-            // Importante: no NotFound para listas vacías; regresamos []
-            return Ok(new { data = resultado });
-        }
+        return Ok(new { data = dto });
     }
 }

@@ -5,6 +5,7 @@ namespace WebServiceVentas.Data;
 
 public partial class VentasDbContext
 {
+    // DbSets del “módulo vehículos / oportunidades”
     public DbSet<Vehiculo> Vehiculos => Set<Vehiculo>();
     public DbSet<Etapa> Etapas => Set<Etapa>();
     public DbSet<Oportunidad> Oportunidades => Set<Oportunidad>();
@@ -12,10 +13,17 @@ public partial class VentasDbContext
     public DbSet<CotizacionItem> CotizacionItems => Set<CotizacionItem>();
     public DbSet<Factura> Facturas => Set<Factura>();
 
+    // DbSets usados por tus controllers de Productos / Clientes / Ventas
+    public DbSet<Producto> Productos => Set<Producto>();
+    public DbSet<Cliente> Clientes => Set<Cliente>();
+    public DbSet<Venta> Ventas => Set<Venta>();
+    public DbSet<VentaProducto> VentaProductos => Set<VentaProducto>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
+        // ===================== Dominio Cotizaciones / Vehículos =====================
         modelBuilder.Entity<Cotizacion>()
             .Property(c => c.Total)
             .HasPrecision(18, 2);
@@ -77,6 +85,51 @@ public partial class VentasDbContext
              .WithMany(c => c.Facturas)
              .HasForeignKey(f => f.CotizacionId)
              .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // ===================== Dominio Productos / Clientes / Ventas =====================
+
+        // Producto
+        modelBuilder.Entity<Producto>(b =>
+        {
+            // Ya existe en migraciones como numeric(18,2). Aseguramos precisión.
+            b.Property(p => p.Precio).HasPrecision(18, 2);
+            // Si quisieras evitar nombres duplicados: b.HasIndex(p => p.Nombre).IsUnique(false);
+        });
+
+        // Cliente
+        modelBuilder.Entity<Cliente>(b =>
+        {
+            // Si NIT debe ser único descomenta:
+            // b.HasIndex(c => c.NIT).IsUnique();
+        });
+
+        // Venta
+        modelBuilder.Entity<Venta>(b =>
+        {
+            b.Property(v => v.Total).HasColumnType("numeric"); // coherente con AddVentas
+            b.HasOne(v => v.Cliente)
+             .WithMany()
+             .HasForeignKey(v => v.ClienteId)
+             .OnDelete(DeleteBehavior.Cascade); // coincide con migración actual
+        });
+
+        // VentaProducto
+        modelBuilder.Entity<VentaProducto>(b =>
+        {
+            b.Property(vp => vp.PrecioUnitario).HasColumnType("numeric"); // migración usa numeric simple
+            b.HasOne(vp => vp.Venta)
+             .WithMany(v => v.ProductosVendidos)
+             .HasForeignKey(vp => vp.VentaId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+            b.HasOne(vp => vp.Producto)
+             .WithMany()
+             .HasForeignKey(vp => vp.ProductoId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+            // Si quieres evitar duplicar el mismo producto en una venta:
+            // b.HasIndex(vp => new { vp.VentaId, vp.ProductoId }).IsUnique();
         });
     }
 }

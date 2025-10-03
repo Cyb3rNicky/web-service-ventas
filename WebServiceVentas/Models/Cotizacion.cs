@@ -16,8 +16,10 @@ public class Cotizacion
     public bool Activa { get; set; } = true;
 
     [Column(TypeName = "numeric(18,2)")]
-    public decimal Total { get; set; }   
+    public decimal Total { get; set; }
 
     public List<CotizacionItem> Items { get; set; } = new();
 
     public List<Factura>? Facturas { get; set; }
+
+}

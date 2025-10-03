@@ -1,91 +1,78 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using WebServiceVentas.Data;
 using WebServiceVentas.Models;
 
-namespace WebServiceVentas.Controllers
+namespace WebServiceVentas.Controllers;
+
+[ApiController]
+[Route("api/clientes")]
+[Authorize(Policy = "VendedorOrAdmin")]
+public class ClientesController : ControllerBase
 {
-    [ApiController]
-    [Route("api/clientes")] // minúsculas
-    [Authorize(Policy = "VendedorOrAdmin")] // Aplicar política general
-    public class ClientesController : ControllerBase
+    private readonly VentasDbContext _context;
+
+    public ClientesController(VentasDbContext context)
     {
-        private readonly VentasDbContext _context;
+        _context = context;
+    }
 
-        public ClientesController(VentasDbContext context)
-        {
-            _context = context;
-        }
+    private IQueryable<Cliente> QueryClientes => _context.Set<Cliente>().AsQueryable();
 
-        // POST: /api/clientes - solo admin
-        [HttpPost]
-        [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> PostCliente([FromBody] Cliente cliente)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+    [HttpPost]
+    [Authorize(Policy = "AdminOnly")]
+    public async Task<IActionResult> PostCliente([FromBody] Cliente cliente, CancellationToken ct)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            _context.Clientes.Add(cliente);
-            await _context.SaveChangesAsync();
+        _context.Set<Cliente>().Add(cliente);
+        await _context.SaveChangesAsync(ct);
 
-            // Mismo shape en la respuesta de creación
-            return CreatedAtAction(nameof(GetClienteById), new { id = cliente.Id }, new { data = cliente });
-        }
+        return CreatedAtAction(nameof(GetClienteById), new { id = cliente.Id }, new { data = cliente });
+    }
 
-        // GET: /api/clientes
-        [HttpGet]
-        [Authorize(Policy = "Authenticated")]
-        public async Task<IActionResult> GetClientes()
-        {
-            var clientes = await _context.Clientes
-                .AsNoTracking()
-                .ToListAsync();
+    [HttpGet]
+    [Authorize(Policy = "Authenticated")]
+    public async Task<IActionResult> GetClientes(CancellationToken ct)
+    {
+        var clientes = await QueryClientes.AsNoTracking().ToListAsync(ct);
+        return Ok(new { data = clientes });
+    }
 
-            return Ok(new { data = clientes }); // [] si no hay registros
-        }
+    [HttpGet("nombre/{nombre}")]
+    [Authorize(Policy = "Authenticated")]
+    public async Task<IActionResult> GetPorNombre(string nombre, CancellationToken ct)
+    {
+        var clientes = await QueryClientes
+            .AsNoTracking()
+            .Where(c => c.Nombre == nombre)
+            .ToListAsync(ct);
 
-        // GET: /api/clientes/nombre/{nombre}
-        [HttpGet("nombre/{nombre}")]
-        [Authorize(Policy = "Authenticated")]
-        public async Task<IActionResult> GetPorNombre(string nombre)
-        {
-            var clientes = await _context.Clientes
-                .AsNoTracking()
-                .Where(c => c.Nombre == nombre) // exacto; si quieres "contiene", avísame
-                .ToListAsync();
+        return Ok(new { data = clientes });
+    }
 
-            return Ok(new { data = clientes }); // [] si no hay coincidencias
-        }
+    [HttpGet("nit/{nit}")]
+    [Authorize(Policy = "Authenticated")]
+    public async Task<IActionResult> GetPorNit(string nit, CancellationToken ct)
+    {
+        var cliente = await QueryClientes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.NIT == nit, ct);
 
-        // GET: /api/clientes/nit/{nit}
-        [HttpGet("nit/{nit}")]
-        [Authorize(Policy = "Authenticated")]
-        public async Task<IActionResult> GetPorNit(string nit)
-        {
-            var cliente = await _context.Clientes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.NIT == nit);
+        if (cliente == null) return NotFound();
+        return Ok(new { data = cliente });
+    }
 
-            if (cliente == null)
-                return NotFound();
+    [HttpGet("{id:int}")]
+    [Authorize(Policy = "Authenticated")]
+    public async Task<IActionResult> GetClienteById(int id, CancellationToken ct)
+    {
+        var cliente = await QueryClientes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id, ct);
 
-            return Ok(new { data = cliente });
-        }
-
-        // GET: /api/clientes/{id}
-        [HttpGet("{id:int}")]
-        [Authorize(Policy = "Authenticated")]
-        public async Task<IActionResult> GetClienteById(int id)
-        {
-            var cliente = await _context.Clientes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-            if (cliente == null)
-                return NotFound();
-
-            return Ok(new { data = cliente });
-        }
+        if (cliente == null) return NotFound();
+        return Ok(new { data = cliente });
     }
 }

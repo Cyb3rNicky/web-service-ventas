@@ -179,6 +179,171 @@ namespace WebServiceVentas.Migrations
                     b.ToTable("Clientes");
                 });
 
+            modelBuilder.Entity("WebServiceVentas.Models.Cotizacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Activa")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("OportunidadId")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OportunidadId");
+
+                    b.ToTable("Cotizaciones");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.CotizacionItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CotizacionId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<decimal>("Descuento")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<int>("VehiculoId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehiculoId");
+
+                    b.HasIndex("CotizacionId", "VehiculoId")
+                        .IsUnique();
+
+                    b.ToTable("CotizacionItems");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Etapa", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("Anio")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int>("Orden")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("Precio")
+                        .HasColumnType("numeric(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Etapas");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Factura", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CotizacionId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Emitida")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CotizacionId");
+
+                    b.HasIndex("Numero")
+                        .IsUnique();
+
+                    b.ToTable("Facturas");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Oportunidad", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Activa")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EtapaId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("VehiculoId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("EtapaId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("VehiculoId");
+
+                    b.ToTable("Oportunidades");
+                });
+
             modelBuilder.Entity("WebServiceVentas.Models.Producto", b =>
                 {
                     b.Property<int>("Id")
@@ -204,24 +369,7 @@ namespace WebServiceVentas.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Productos", (string)null);
-                });
-
-            modelBuilder.Entity("WebServiceVentas.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
+                    b.ToTable("Productos");
                 });
 
             modelBuilder.Entity("WebServiceVentas.Models.Usuario", b =>
@@ -299,20 +447,35 @@ namespace WebServiceVentas.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("WebServiceVentas.Models.UsuarioRole", b =>
+            modelBuilder.Entity("WebServiceVentas.Models.Vehiculo", b =>
                 {
-                    b.Property<int>("UsuarioId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    b.Property<int>("RoleId")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Anio")
                         .HasColumnType("integer");
 
-                    b.HasKey("UsuarioId", "RoleId");
+                    b.Property<string>("Marca")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                    b.HasIndex("RoleId");
+                    b.Property<string>("Modelo")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
-                    b.ToTable("UsuarioRoles");
+                    b.Property<decimal>("Precio")
+                        .HasColumnType("numeric(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vehiculos");
                 });
+
             modelBuilder.Entity("WebServiceVentas.Models.Venta", b =>
                 {
                     b.Property<int>("Id")
@@ -417,34 +580,81 @@ namespace WebServiceVentas.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebServiceVentas.Models.UsuarioRole", b =>
+            modelBuilder.Entity("WebServiceVentas.Models.Cotizacion", b =>
                 {
-                    b.HasOne("WebServiceVentas.Models.Role", "Role")
-                        .WithMany("UsuarioRoles")
-                        .HasForeignKey("RoleId")
+                    b.HasOne("WebServiceVentas.Models.Oportunidad", "Oportunidad")
+                        .WithMany("Cotizaciones")
+                        .HasForeignKey("OportunidadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Oportunidad");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.CotizacionItem", b =>
+                {
+                    b.HasOne("WebServiceVentas.Models.Cotizacion", "Cotizacion")
+                        .WithMany("Items")
+                        .HasForeignKey("CotizacionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebServiceVentas.Models.Vehiculo", "Vehiculo")
+                        .WithMany("CotizacionItems")
+                        .HasForeignKey("VehiculoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cotizacion");
+
+                    b.Navigation("Vehiculo");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Factura", b =>
+                {
+                    b.HasOne("WebServiceVentas.Models.Cotizacion", "Cotizacion")
+                        .WithMany("Facturas")
+                        .HasForeignKey("CotizacionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cotizacion");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Oportunidad", b =>
+                {
+                    b.HasOne("WebServiceVentas.Models.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("WebServiceVentas.Models.Etapa", "Etapa")
+                        .WithMany("Oportunidades")
+                        .HasForeignKey("EtapaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("WebServiceVentas.Models.Usuario", "Usuario")
-                        .WithMany("UsuarioRoles")
+                        .WithMany()
                         .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Role");
+                    b.HasOne("WebServiceVentas.Models.Vehiculo", "Vehiculo")
+                        .WithMany("Oportunidades")
+                        .HasForeignKey("VehiculoId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Etapa");
 
                     b.Navigation("Usuario");
+
+                    b.Navigation("Vehiculo");
                 });
 
-            modelBuilder.Entity("WebServiceVentas.Models.Role", b =>
-                {
-                    b.Navigation("UsuarioRoles");
-                });
-
-            modelBuilder.Entity("WebServiceVentas.Models.Usuario", b =>
-                {
-                    b.Navigation("UsuarioRoles");
-                });
             modelBuilder.Entity("WebServiceVentas.Models.Venta", b =>
                 {
                     b.HasOne("WebServiceVentas.Models.Cliente", "Cliente")
@@ -473,6 +683,30 @@ namespace WebServiceVentas.Migrations
                     b.Navigation("Producto");
 
                     b.Navigation("Venta");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Cotizacion", b =>
+                {
+                    b.Navigation("Facturas");
+
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Etapa", b =>
+                {
+                    b.Navigation("Oportunidades");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Oportunidad", b =>
+                {
+                    b.Navigation("Cotizaciones");
+                });
+
+            modelBuilder.Entity("WebServiceVentas.Models.Vehiculo", b =>
+                {
+                    b.Navigation("CotizacionItems");
+
+                    b.Navigation("Oportunidades");
                 });
 
             modelBuilder.Entity("WebServiceVentas.Models.Venta", b =>
