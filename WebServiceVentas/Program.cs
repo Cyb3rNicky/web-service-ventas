@@ -101,18 +101,43 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    // Política para admin: solo usuarios con rol admin
-    options.AddPolicy("AdminOnly", policy => 
+    // Admin exclusivo
+    options.AddPolicy("AdminOnly", policy =>
         policy.RequireRole("admin"));
-    
-    // Política para vendedor: usuarios con rol vendedor o admin
-    options.AddPolicy("VendedorOrAdmin", policy => 
+
+    // Gerente exclusivo
+    options.AddPolicy("GerenteOnly", policy =>
+        policy.RequireRole("gerente"));
+
+    // Admin o Gerente
+    options.AddPolicy("AdminOrGerente", policy =>
+        policy.RequireRole("admin", "gerente"));
+
+    // Vendedor o Admin
+    options.AddPolicy("VendedorOrAdmin", policy =>
         policy.RequireRole("vendedor", "admin"));
-    
-    // Política para cualquier usuario autenticado
-    options.AddPolicy("Authenticated", policy => 
+
+    // Inventario o Admin
+    options.AddPolicy("InventarioOrAdmin", policy =>
+        policy.RequireRole("inventario", "admin"));
+
+    // Asistente o Admin
+    options.AddPolicy("AsistenteOrAdmin", policy =>
+        policy.RequireRole("asistente", "admin"));
+
+    // Cualquier usuario autenticado
+    options.AddPolicy("Authenticated", policy =>
         policy.RequireAuthenticatedUser());
+
+        // Admin, gerente o vendedor
+    options.AddPolicy("AdminGerenteVendedor", policy =>
+        policy.RequireRole("admin", "gerente", "vendedor"));
+
+    // Admin, inventario o asistente
+    options.AddPolicy("AdminInventarioAsistente", policy =>
+        policy.RequireRole("admin", "inventario", "asistente"));
 });
+
 
 var app = builder.Build();
 

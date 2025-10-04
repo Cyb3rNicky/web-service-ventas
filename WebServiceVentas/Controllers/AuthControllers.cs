@@ -16,208 +16,296 @@ namespace WebServiceVentas.Controllers
     {
         private readonly UserManager<Usuario> _userManager;
         private readonly SignInManager<Usuario> _signInManager;
-        private readonly RoleManager<IdentityRole<int>> _roleManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager; // 🔹 CAMBIADO A IdentityRole<int>
+        private readonly IConfiguration _configuration;
 
         public AuthController(
             UserManager<Usuario> userManager,
             SignInManager<Usuario> signInManager,
-            RoleManager<IdentityRole<int>> roleManager)
+            RoleManager<IdentityRole<int>> roleManager, // 🔹 CAMBIADO A IdentityRole<int>
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _configuration = configuration;
         }
 
         // ================= Registro =================
         [HttpPost("register")]
-        [Authorize(Policy = "admin,gerente")] // SOLO ADMINS PUEDEN REGISTRAR
+        [Authorize(Policy = "AdminOrGerente")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            // Validar que solo admins puedan crear otros admins
-            var currentUser = await _userManager.GetUserAsync(User);
-            var currentUserRoles = await _userManager.GetRolesAsync(currentUser);
-
-            var roleToAssign = !string.IsNullOrEmpty(model.Role) ? model.Role.ToLower() : "vendedor";
-
-            // Si intenta crear un admin, verificar que el usuario actual sea admin
-            if (roleToAssign == "admin" && !currentUserRoles.Contains("admin"))
+            try
             {
-                return Forbid("No tienes permisos para crear usuarios admin");
+                // Validaciones básicas
+                if (string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.Password))
+                    return BadRequest(new { message = "Usuario y contraseña son requeridos" });
+
+                // Verificar si usuario existe
+                var existingUser = await _userManager.FindByNameAsync(model.UserName);
+                if (existingUser != null)
+                    return BadRequest(new { message = "El usuario ya existe" });
+
+                var existingEmail = await _userManager.FindByEmailAsync(model.Email);
+                if (existingEmail != null)
+                    return BadRequest(new { message = "El email ya está registrado" });
+
+                // Validar rol
+                var roleToAssign = !string.IsNullOrEmpty(model.Role) ? model.Role.ToLower() : "vendedor";
+                var allowedRoles = new[] { "admin", "vendedor" };
+                
+                if (!allowedRoles.Contains(roleToAssign))
+                    return BadRequest(new { message = "Rol inválido. Solo se permiten 'admin' o 'vendedor'" });
+
+                // Verificar si el rol existe, si no crearlo
+                if (!await _roleManager.RoleExistsAsync(roleToAssign))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole<int>(roleToAssign));
+                }
+
+                // Crear usuario
+                var user = new Usuario
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    Nombre = model.Nombre,
+                    Apellido = model.Apellido
+                };
+
+                var result = await _userManager.CreateAsync(user, model.Password);
+                
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description);
+                    return BadRequest(new { message = "Error al crear usuario", errors });
+                }
+
+                // Asignar rol
+                await _userManager.AddToRoleAsync(user, roleToAssign);
+
+                return Ok(new
+                {
+                    message = "Usuario registrado exitosamente",
+                    data = new {
+                        user.Id,
+                        user.UserName,
+                        user.Email,
+                        user.Nombre,
+                        user.Apellido,
+                        Role = roleToAssign
+                    }
+                });
             }
-
-            // Validar roles permitidos
-            var allowedRoles = new[] { "admin", "vendedor" };
-            if (!allowedRoles.Contains(roleToAssign))
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "Rol inválido. Solo se permiten 'admin' o 'vendedor'" });
+                return StatusCode(500, new { message = "Error interno del servidor", error = ex.Message });
             }
-
-            // Crear usuario
-            var user = new Usuario
-            {
-                UserName = model.UserName,
-                Email = model.Email,
-                Nombre = model.Nombre,
-                Apellido = model.Apellido
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-                return BadRequest(result.Errors);
-
-            await _userManager.AddToRoleAsync(user, roleToAssign);
-
-            return Ok(new
-            {
-                user.Id,
-                user.UserName,
-                user.Email,
-                user.Nombre,
-                user.Apellido,
-                Role = roleToAssign
-            });
         }
-
-
 
         // ================= Login =================
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
-            if (!result.Succeeded)
-                return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
-
-            var user = await _userManager.FindByNameAsync(model.UserName);
-            var roles = await _userManager.GetRolesAsync(user);
-
-            // Generar token JWT con roles
-            var jwtConfig = HttpContext.RequestServices.GetRequiredService<IConfiguration>().GetSection("Jwt");
-            var claims = new List<Claim>
+            try
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
-                new Claim("nombre", user.Nombre ?? ""),
-                new Claim("apellido", user.Apellido ?? "")
-            };
+                if (string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.Password))
+                    return BadRequest(new { message = "Usuario y contraseña son requeridos" });
 
-            // Agregar roles al token
-            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+                var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
+                
+                if (!result.Succeeded)
+                    return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var user = await _userManager.FindByNameAsync(model.UserName);
+                if (user == null)
+                    return Unauthorized(new { message = "Usuario no encontrado" });
 
-            var token = new JwtSecurityToken(
-                issuer: jwtConfig["Issuer"],
-                audience: jwtConfig["Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
-                signingCredentials: creds
-            );
+                var roles = await _userManager.GetRolesAsync(user);
 
-            return Ok(new
+                // Generar token JWT
+                var jwtConfig = _configuration.GetSection("Jwt");
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig["Key"] ?? ""));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                var claims = new List<Claim>
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                    new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName ?? ""),
+                    new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+                    new Claim("nombre", user.Nombre ?? ""),
+                    new Claim("apellido", user.Apellido ?? "")
+                };
+
+                // Agregar roles al token
+                claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+
+                var token = new JwtSecurityToken(
+                    issuer: jwtConfig["Issuer"],
+                    audience: jwtConfig["Audience"],
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddHours(2),
+                    signingCredentials: creds
+                );
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    user = new { 
+                        user.Id, 
+                        user.UserName, 
+                        user.Email, 
+                        user.Nombre, 
+                        user.Apellido, 
+                        Roles = roles 
+                    }
+                });
+            }
+            catch (Exception ex)
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                user = new { user.Id, user.UserName, user.Email, user.Nombre, user.Apellido, Roles = roles }
-            });
+                return StatusCode(500, new { message = "Error en el login", error = ex.Message });
+            }
         }
-
 
         // ================= Cambiar Contraseña =================
         [HttpPost("cambiar-password")]
-        [Authorize] // Solo usuarios autenticados
+        [Authorize]
         public async Task<IActionResult> CambiarPassword([FromBody] CambiarPasswordModel model)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            try
             {
-                return NotFound(new { message = "Usuario no encontrado" });
-            }
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return NotFound(new { message = "Usuario no encontrado" });
+                }
 
-            // Verificar que la contraseña actual sea correcta
-            var isCurrentPasswordValid = await _userManager.CheckPasswordAsync(user, model.PasswordActual);
-            if (!isCurrentPasswordValid)
+                // Verificar que la contraseña actual sea correcta
+                var isCurrentPasswordValid = await _userManager.CheckPasswordAsync(user, model.PasswordActual);
+                if (!isCurrentPasswordValid)
+                {
+                    return BadRequest(new { message = "La contraseña actual es incorrecta" });
+                }
+
+                // Cambiar la contraseña
+                var result = await _userManager.ChangePasswordAsync(user, model.PasswordActual, model.PasswordNueva);
+
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description);
+                    return BadRequest(new { message = "Error al cambiar la contraseña", errors });
+                }
+
+                return Ok(new { message = "Contraseña cambiada exitosamente" });
+            }
+            catch (Exception ex)
             {
-                return BadRequest(new { message = "La contraseña actual es incorrecta" });
+                return StatusCode(500, new { message = "Error interno del servidor", error = ex.Message });
             }
-
-            // Cambiar la contraseña
-            var result = await _userManager.ChangePasswordAsync(user, model.PasswordActual, model.PasswordNueva);
-
-            if (!result.Succeeded)
-            {
-                var errors = result.Errors.Select(e => e.Description);
-                return BadRequest(new { message = "Error al cambiar la contraseña", errors });
-            }
-
-            return Ok(new { message = "Contraseña cambiada exitosamente" });
         }
 
         // ================= Resetear Contraseña (Solo admin) =================
         [HttpPost("resetear-password/{userId:int}")]
-        [Authorize(Policy = "AdminOnly")] // Solo admin puede resetear passwords
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> ResetearPassword(int userId, [FromBody] ResetearPasswordModel model)
         {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user == null)
+            try
             {
-                return NotFound(new { message = "Usuario no encontrado" });
+                var user = await _userManager.FindByIdAsync(userId.ToString());
+                if (user == null)
+                {
+                    return NotFound(new { message = "Usuario no encontrado" });
+                }
+
+                // Generar token de reset
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                // Resetear la contraseña
+                var result = await _userManager.ResetPasswordAsync(user, token, model.PasswordNueva);
+
+                if (!result.Succeeded)
+                {
+                    var errors = result.Errors.Select(e => e.Description);
+                    return BadRequest(new { message = "Error al resetear la contraseña", errors });
+                }
+
+                return Ok(new { message = "Contraseña reseteada exitosamente" });
             }
-
-            // Generar token de reset
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            // Resetear la contraseña
-            var result = await _userManager.ResetPasswordAsync(user, token, model.PasswordNueva);
-
-            if (!result.Succeeded)
+            catch (Exception ex)
             {
-                var errors = result.Errors.Select(e => e.Description);
-                return BadRequest(new { message = "Error al resetear la contraseña", errors });
+                return StatusCode(500, new { message = "Error interno del servidor", error = ex.Message });
             }
+        }
 
-            return Ok(new { message = "Contraseña reseteada exitosamente" });
+        // ================= Obtener Usuario Actual =================
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetUsuarioActual()
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return NotFound(new { message = "Usuario no encontrado" });
+                }
+
+                var roles = await _userManager.GetRolesAsync(user);
+
+                return Ok(new
+                {
+                    user.Id,
+                    user.UserName,
+                    user.Email,
+                    user.Nombre,
+                    user.Apellido,
+                    Roles = roles
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno del servidor", error = ex.Message });
+            }
         }
     }
 
     // ================= Modelos =================
-        public class RegisterModel
-        {
-            public string UserName { get; set; }
-            public string Email { get; set; }
-            public string Nombre { get; set; }
-            public string Apellido { get; set; }
-            public string Password { get; set; }
-            public string Role { get; set; } // <--- Nuevo campo para rol  "admin" o "vendedor"
-        }
+    public class RegisterModel
+    {
+        public required string UserName { get; set; }
+        public required string Email { get; set; }
+        public required string Nombre { get; set; }
+        public required string Apellido { get; set; }
+        public required string Password { get; set; }
+        public required string Role { get; set; }
+    }
 
     public class LoginModel
     {
-        public string UserName { get; set; }
-        public string Password { get; set; }
+        public required string UserName { get; set; }
+        public required string Password { get; set; }
     }
 }
 
 public class CambiarPasswordModel
 {
     [Required(ErrorMessage = "La contraseña actual es requerida")]
-    public string PasswordActual { get; set; }
+    public required string PasswordActual { get; set; }
 
     [Required(ErrorMessage = "La nueva contraseña es requerida")]
     [StringLength(100, MinimumLength = 6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
-    public string PasswordNueva { get; set; }
+    public required string PasswordNueva { get; set; }
 
     [Compare("PasswordNueva", ErrorMessage = "Las contraseñas no coinciden")]
-    public string ConfirmarPasswordNueva { get; set; }
+    public required string ConfirmarPasswordNueva { get; set; }
 }
 
 public class ResetearPasswordModel
 {
     [Required(ErrorMessage = "La nueva contraseña es requerida")]
     [StringLength(100, MinimumLength = 6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
-    public string PasswordNueva { get; set; }
+    public required string PasswordNueva { get; set; }
 
     [Compare("PasswordNueva", ErrorMessage = "Las contraseñas no coinciden")]
-    public string ConfirmarPasswordNueva { get; set; }
+    public required string ConfirmarPasswordNueva { get; set; }
 }
