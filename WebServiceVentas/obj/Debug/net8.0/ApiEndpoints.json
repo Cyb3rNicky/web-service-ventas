@@ -1,5 +1,84 @@
 [
   {
+    "ContainingType": "WebServiceVentas.Controllers.AdminController",
+    "Method": "GetUsuarios",
+    "RelativePath": "api/admin/usuarios",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.AdminController",
+    "Method": "GetUsuarioPorId",
+    "RelativePath": "api/admin/usuarios/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.AdminController",
+    "Method": "ActualizarUsuario",
+    "RelativePath": "api/admin/usuarios/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.AdminUpdateUserRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.AdminController",
+    "Method": "DeleteUsuario",
+    "RelativePath": "api/admin/usuarios/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.AuthController",
+    "Method": "CambiarPassword",
+    "RelativePath": "api/auth/cambiar-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "CambiarPasswordModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "WebServiceVentas.Controllers.AuthController",
     "Method": "Login",
     "RelativePath": "api/auth/login",
@@ -13,6 +92,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.AuthController",
+    "Method": "GetUsuarioActual",
+    "RelativePath": "api/auth/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -32,16 +121,407 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "GetProductos",
-    "RelativePath": "api/Productos",
+    "ContainingType": "WebServiceVentas.Controllers.AuthController",
+    "Method": "ResetearPassword",
+    "RelativePath": "api/auth/resetear-password/{userId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "model",
+        "Type": "ResetearPasswordModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.ClientesController",
+    "Method": "PostCliente",
+    "RelativePath": "api/clientes",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "cliente",
+        "Type": "WebServiceVentas.Models.Cliente",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.ClientesController",
+    "Method": "GetClientes",
+    "RelativePath": "api/clientes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.ClientesController",
+    "Method": "GetClienteById",
+    "RelativePath": "api/clientes/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.ClientesController",
+    "Method": "PutCliente",
+    "RelativePath": "api/clientes/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "cliente",
+        "Type": "WebServiceVentas.Models.Cliente",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.ClientesController",
+    "Method": "DeleteCliente",
+    "RelativePath": "api/clientes/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.ClientesController",
+    "Method": "GetOportunidadesPorCliente",
+    "RelativePath": "api/clientes/{id}/oportunidades",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.ClientesController",
+    "Method": "GetPorNit",
+    "RelativePath": "api/clientes/nit/{nit}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "nit",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.ClientesController",
+    "Method": "GetPorNombre",
+    "RelativePath": "api/clientes/nombre/{nombre}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "nombre",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.CotizacionItemsController",
+    "Method": "AgregarItemACotizacion",
+    "RelativePath": "api/cotizacion-items",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.AgregarItemRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.CotizacionItemsController",
+    "Method": "GetCotizacionItemPorId",
+    "RelativePath": "api/cotizacion-items/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.CotizacionItemsController",
+    "Method": "ActualizarCotizacionItem",
+    "RelativePath": "api/cotizacion-items/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.ActualizarItemRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.CotizacionItemsController",
+    "Method": "EliminarCotizacionItem",
+    "RelativePath": "api/cotizacion-items/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.CotizacionItemsController",
+    "Method": "GetItemsPorCotizacion",
+    "RelativePath": "api/cotizacion-items/cotizacion/{cotizacionId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "cotizacionId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.CotizacionesController",
+    "Method": "GetCotizaciones",
+    "RelativePath": "api/cotizaciones",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.CotizacionesController",
+    "Method": "CrearCotizacion",
+    "RelativePath": "api/cotizaciones",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.CrearCotizacionDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.CotizacionesController",
+    "Method": "GetCotizacionPorId",
+    "RelativePath": "api/cotizaciones/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.CotizacionesController",
+    "Method": "EliminarCotizacion",
+    "RelativePath": "api/cotizaciones/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.CotizacionesController",
+    "Method": "ActualizarEstadoCotizacion",
+    "RelativePath": "api/cotizaciones/{id}/estado",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.CotizacionesController\u002BActualizarEstadoCotizacionRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.EtapasController",
+    "Method": "GetEtapas",
+    "RelativePath": "api/etapas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.EtapasController",
+    "Method": "CrearEtapa",
+    "RelativePath": "api/etapas",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "WebServiceVentas.Controllers.CrearEtapaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.EtapasController",
+    "Method": "GetEtapaPorId",
+    "RelativePath": "api/etapas/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.EtapasController",
+    "Method": "ActualizarEtapa",
+    "RelativePath": "api/etapas/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "WebServiceVentas.Controllers.CrearEtapaDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.EtapasController",
+    "Method": "EliminarEtapa",
+    "RelativePath": "api/etapas/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.FacturasController",
+    "Method": "GetFacturas",
+    "RelativePath": "api/facturas",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[WebServiceVentas.Models.Producto, WebServiceVentas, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -52,35 +532,25 @@
     ]
   },
   {
-    "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "PostProducto",
-    "RelativePath": "api/Productos",
+    "ContainingType": "WebServiceVentas.Controllers.FacturasController",
+    "Method": "CrearFactura",
+    "RelativePath": "api/facturas",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "producto",
-        "Type": "WebServiceVentas.Models.Producto",
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.FacturaDto",
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "WebServiceVentas.Models.Producto",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
-    "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "GetProductoPorId",
-    "RelativePath": "api/Productos/id/{id}",
+    "ContainingType": "WebServiceVentas.Controllers.FacturasController",
+    "Method": "GetFactura",
+    "RelativePath": "api/facturas/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -91,22 +561,12 @@
         "IsRequired": true
       }
     ],
-    "ReturnTypes": [
-      {
-        "Type": "WebServiceVentas.Models.Producto",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "ReturnTypes": []
   },
   {
-    "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "PutProductoPorId",
-    "RelativePath": "api/Productos/id/{id}",
+    "ContainingType": "WebServiceVentas.Controllers.FacturasController",
+    "Method": "ActualizarFactura",
+    "RelativePath": "api/facturas/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -117,17 +577,17 @@
         "IsRequired": true
       },
       {
-        "Name": "producto",
-        "Type": "WebServiceVentas.Models.Producto",
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.FacturaDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "DeleteProductoPorId",
-    "RelativePath": "api/Productos/id/{id}",
+    "ContainingType": "WebServiceVentas.Controllers.FacturasController",
+    "Method": "EliminarFactura",
+    "RelativePath": "api/facturas/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
@@ -141,63 +601,269 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "GetProductoPorNombre",
-    "RelativePath": "api/Productos/nombre/{nombre}",
+    "ContainingType": "WebServiceVentas.Controllers.OportunidadesController",
+    "Method": "GetOportunidades",
+    "RelativePath": "api/oportunidades",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "nombre",
-        "Type": "System.String",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "WebServiceVentas.Models.Producto",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
+    "Parameters": [],
+    "ReturnTypes": []
   },
   {
-    "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "PutProductoPorNombre",
-    "RelativePath": "api/Productos/nombre/{nombre}",
-    "HttpMethod": "PUT",
+    "ContainingType": "WebServiceVentas.Controllers.OportunidadesController",
+    "Method": "CrearOportunidad",
+    "RelativePath": "api/oportunidades",
+    "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "nombre",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "producto",
-        "Type": "WebServiceVentas.Models.Producto",
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.OportunidadRequest",
         "IsRequired": true
       }
     ],
     "ReturnTypes": []
   },
   {
-    "ContainingType": "VentasApi.Controllers.ProductosController",
-    "Method": "DeleteProductoPorNombre",
-    "RelativePath": "api/Productos/nombre/{nombre}",
+    "ContainingType": "WebServiceVentas.Controllers.OportunidadesController",
+    "Method": "GetOportunidadPorId",
+    "RelativePath": "api/oportunidades/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.OportunidadesController",
+    "Method": "ActualizarOportunidad",
+    "RelativePath": "api/oportunidades/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.OportunidadRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.OportunidadesController",
+    "Method": "EliminarOportunidad",
+    "RelativePath": "api/oportunidades/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "nombre",
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.OportunidadesController",
+    "Method": "ActualizarEstadoOportunidad",
+    "RelativePath": "api/oportunidades/{id}/estado",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.ActualizarEstadoOportunidadRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.OportunidadesController",
+    "Method": "GetOportunidadesPorCliente",
+    "RelativePath": "api/oportunidades/cliente/{clienteId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "clienteId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.OportunidadesController",
+    "Method": "GetOportunidadesPorUsuario",
+    "RelativePath": "api/oportunidades/usuario/{usuarioId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "usuarioId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.VehiculosController",
+    "Method": "GetVehiculos",
+    "RelativePath": "api/vehiculos",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.VehiculosController",
+    "Method": "CrearVehiculo",
+    "RelativePath": "api/vehiculos",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "WebServiceVentas.Controllers.CrearVehiculoDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.VehiculosController",
+    "Method": "GetVehiculoPorId",
+    "RelativePath": "api/vehiculos/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.VehiculosController",
+    "Method": "ActualizarVehiculo",
+    "RelativePath": "api/vehiculos/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "WebServiceVentas.Controllers.CrearVehiculoDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.VehiculosController",
+    "Method": "EliminarVehiculo",
+    "RelativePath": "api/vehiculos/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.VehiculosController",
+    "Method": "GetVehiculosPorMarca",
+    "RelativePath": "api/vehiculos/marca/{marca}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "marca",
         "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.VehiculosController",
+    "Method": "GetMarcas",
+    "RelativePath": "api/vehiculos/marcas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.VehiculosController",
+    "Method": "BuscarVehiculos",
+    "RelativePath": "api/vehiculos/search",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "search",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "WebServiceVentas.Controllers.VentasController",
+    "Method": "CrearVenta",
+    "RelativePath": "api/ventas",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "WebServiceVentas.Controllers.VentasController\u002BVentaRequest",
         "IsRequired": true
       }
     ],
@@ -205,7 +871,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_6",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_9",
     "RelativePath": "healthz",
     "HttpMethod": "GET",
     "IsController": false,
@@ -218,26 +884,5 @@
         "StatusCode": 200
       }
     ]
-  },
-  {
-    "ContainingType": "WebServiceVentas.Controllers.WeatherForecastController",
-    "Method": "Get",
-    "RelativePath": "WeatherForecast",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": [
-      {
-        "Type": "System.Collections.Generic.IEnumerable\u00601[[WebServiceVentas.WeatherForecast, WebServiceVentas, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ],
-    "EndpointName": "GetWeatherForecast"
   }
 ]

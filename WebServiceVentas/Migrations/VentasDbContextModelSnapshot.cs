@@ -286,8 +286,10 @@ namespace WebServiceVentas.Migrations
                     b.Property<int>("CotizacionId")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("Emitida")
-                        .HasColumnType("boolean");
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Numero")
                         .IsRequired()
@@ -342,34 +344,6 @@ namespace WebServiceVentas.Migrations
                     b.HasIndex("VehiculoId");
 
                     b.ToTable("Oportunidades");
-                });
-
-            modelBuilder.Entity("WebServiceVentas.Models.Producto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Descripcion")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Precio")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Productos");
                 });
 
             modelBuilder.Entity("WebServiceVentas.Models.Usuario", b =>
@@ -514,7 +488,7 @@ namespace WebServiceVentas.Migrations
                     b.Property<decimal>("PrecioUnitario")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("ProductoId")
+                    b.Property<int?>("VehiculoId")
                         .HasColumnType("integer");
 
                     b.Property<int>("VentaId")
@@ -522,7 +496,7 @@ namespace WebServiceVentas.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductoId");
+                    b.HasIndex("VehiculoId");
 
                     b.HasIndex("VentaId");
 
@@ -668,11 +642,10 @@ namespace WebServiceVentas.Migrations
 
             modelBuilder.Entity("WebServiceVentas.Models.VentaProducto", b =>
                 {
-                    b.HasOne("WebServiceVentas.Models.Producto", "Producto")
+                    b.HasOne("WebServiceVentas.Models.Vehiculo", "Vehiculo")
                         .WithMany()
-                        .HasForeignKey("ProductoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("VehiculoId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WebServiceVentas.Models.Venta", "Venta")
                         .WithMany("ProductosVendidos")
@@ -680,7 +653,7 @@ namespace WebServiceVentas.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Producto");
+                    b.Navigation("Vehiculo");
 
                     b.Navigation("Venta");
                 });

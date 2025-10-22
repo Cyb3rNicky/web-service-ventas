@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\David\\OneDrive\\Documentos\\2do semestre 2025\\Analisis de Sistemas 2\\proyectofinaldecurso\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj": {}
+    "C:\\Users\\allan\\Source\\Repos\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj": {}
   },
   "projects": {
-    "C:\\Users\\David\\OneDrive\\Documentos\\2do semestre 2025\\Analisis de Sistemas 2\\proyectofinaldecurso\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj": {
+    "C:\\Users\\allan\\Source\\Repos\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\David\\OneDrive\\Documentos\\2do semestre 2025\\Analisis de Sistemas 2\\proyectofinaldecurso\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj",
+        "projectUniqueName": "C:\\Users\\allan\\Source\\Repos\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj",
         "projectName": "WebServiceVentas",
-        "projectPath": "C:\\Users\\David\\OneDrive\\Documentos\\2do semestre 2025\\Analisis de Sistemas 2\\proyectofinaldecurso\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj",
-        "packagesPath": "C:\\Users\\David\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\David\\OneDrive\\Documentos\\2do semestre 2025\\Analisis de Sistemas 2\\proyectofinaldecurso\\web-service-ventas\\WebServiceVentas\\obj\\",
+        "projectPath": "C:\\Users\\allan\\Source\\Repos\\web-service-ventas\\WebServiceVentas\\WebServiceVentas.csproj",
+        "packagesPath": "C:\\Users\\allan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\allan\\Source\\Repos\\web-service-ventas\\WebServiceVentas\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\David\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\allan\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
