@@ -32,9 +32,9 @@ namespace WebServiceVentas.Models
         public int VentaId { get; set; }
         public Venta Venta { get; set; } = null!;
 
-        [Required]
-        public int ProductoId { get; set; }
-        public Producto Producto { get; set; } = null!;
+        // Si el producto vendido es un vehículo, se referencia aquí
+        public int? VehiculoId { get; set; }
+        public Vehiculo? Vehiculo { get; set; }
 
         [Required]
         public int Cantidad { get; set; }

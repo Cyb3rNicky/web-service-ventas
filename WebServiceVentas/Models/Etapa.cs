@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization; 
 
 namespace WebServiceVentas.Models;
 
@@ -20,5 +21,6 @@ public class Etapa
     [Column(TypeName = "numeric(18,2)")]
     public decimal? Precio { get; set; }
 
+    [JsonIgnore]
     public List<Oportunidad>? Oportunidades { get; set; }
 }

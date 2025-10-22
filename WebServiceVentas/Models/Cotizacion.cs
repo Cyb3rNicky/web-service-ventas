@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization; 
 
 namespace WebServiceVentas.Models;
 
@@ -18,8 +19,9 @@ public class Cotizacion
     [Column(TypeName = "numeric(18,2)")]
     public decimal Total { get; set; }
 
-    public List<CotizacionItem> Items { get; set; } = new();
+    [JsonIgnore]
+    public ICollection<CotizacionItem> Items { get; set; } = new List<CotizacionItem>();
 
-    public List<Factura>? Facturas { get; set; }
-
+    [JsonIgnore]
+    public ICollection<Factura> Facturas { get; set; }
 }

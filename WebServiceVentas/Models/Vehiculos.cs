@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace WebServiceVentas.Models;
 
@@ -21,6 +22,9 @@ public class Vehiculo
     [Range(0, double.MaxValue)]
     public decimal Precio { get; set; }
 
+
+    [JsonIgnore]
     public List<Oportunidad>? Oportunidades { get; set; }
+    [JsonIgnore]
     public List<CotizacionItem>? CotizacionItems { get; set; }
 }

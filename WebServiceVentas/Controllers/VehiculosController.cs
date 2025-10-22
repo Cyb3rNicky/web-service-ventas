@@ -6,9 +6,28 @@ using WebServiceVentas.Models;
 
 namespace WebServiceVentas.Controllers;
 
+// DTO para salida (response)
+public class VehiculoDto
+{
+    public int Id { get; set; }
+    public string Marca { get; set; } = string.Empty;
+    public string Modelo { get; set; } = string.Empty;
+    public int Anio { get; set; }
+    public decimal Precio { get; set; }
+}
+
+// DTO para entrada (creación/actualización)
+public class CrearVehiculoDto
+{
+    public string Marca { get; set; } = string.Empty;
+    public string Modelo { get; set; } = string.Empty;
+    public int Anio { get; set; }
+    public decimal Precio { get; set; }
+}
+
 [ApiController]
 [Route("api/vehiculos")]
-[Authorize(Policy = "Authenticated")] // 🔹 CORREGIDO: Todos los usuarios autenticados pueden acceder
+[Authorize(Policy = "Authenticated")]
 public class VehiculosController : ControllerBase
 {
     private readonly VentasDbContext _context;
@@ -19,33 +38,26 @@ public class VehiculosController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Policy = "Authenticated")] // ✅ CORRECTO: Cualquier usuario autenticado puede ver
+    [Authorize(Policy = "Authenticated")]
     public async Task<IActionResult> GetVehiculos(CancellationToken ct)
     {
         try
         {
             var vehiculos = await _context.Vehiculos
                 .AsNoTracking()
-                .Select(v => new
+                .Select(v => new VehiculoDto
                 {
-                    v.Id,
-                    v.Marca,
-                    v.Modelo,
-                    v.Anio,
-                    v.Precio,
-                    OportunidadesCount = _context.Oportunidades.Count(o => o.VehiculoId == v.Id),
-                    OportunidadesActivasCount = _context.Oportunidades.Count(o => o.VehiculoId == v.Id && o.Activa),
-                    CotizacionItemsCount = _context.CotizacionItems.Count(ci => ci.VehiculoId == v.Id)
+                    Id = v.Id,
+                    Marca = v.Marca,
+                    Modelo = v.Modelo,
+                    Anio = v.Anio,
+                    Precio = v.Precio
                 })
                 .OrderBy(v => v.Marca)
                 .ThenBy(v => v.Modelo)
                 .ToListAsync(ct);
 
-            return Ok(new { 
-                data = vehiculos,
-                total = vehiculos.Count,
-                marcas = vehiculos.Select(v => v.Marca).Distinct().Count()
-            });
+            return Ok(vehiculos);
         }
         catch (Exception ex)
         {
@@ -54,7 +66,7 @@ public class VehiculosController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    [Authorize(Policy = "Authenticated")] // ✅ CORRECTO: Cualquier usuario autenticado puede ver
+    [Authorize(Policy = "Authenticated")]
     public async Task<IActionResult> GetVehiculoPorId(int id, CancellationToken ct)
     {
         try
@@ -62,36 +74,20 @@ public class VehiculosController : ControllerBase
             var vehiculo = await _context.Vehiculos
                 .AsNoTracking()
                 .Where(v => v.Id == id)
-                .Select(v => new
+                .Select(v => new VehiculoDto
                 {
-                    v.Id,
-                    v.Marca,
-                    v.Modelo,
-                    v.Anio,
-                    v.Precio,
-                    OportunidadesCount = _context.Oportunidades.Count(o => o.VehiculoId == v.Id),
-                    OportunidadesActivasCount = _context.Oportunidades.Count(o => o.VehiculoId == v.Id && o.Activa),
-                    CotizacionItemsCount = _context.CotizacionItems.Count(ci => ci.VehiculoId == v.Id),
-                    Oportunidades = _context.Oportunidades
-                        .Where(o => o.VehiculoId == v.Id)
-                        .Include(o => o.Cliente)
-                        .Include(o => o.Usuario)
-                        .Select(o => new
-                        {
-                            o.Id,
-                            Cliente = new { o.Cliente.Nombre },
-                            Vendedor = new { o.Usuario.Nombre, o.Usuario.Apellido },
-                            o.Activa
-                        })
-                        .Take(10) // Limitar a 10 oportunidades
-                        .ToList()
+                    Id = v.Id,
+                    Marca = v.Marca,
+                    Modelo = v.Modelo,
+                    Anio = v.Anio,
+                    Precio = v.Precio
                 })
                 .FirstOrDefaultAsync(ct);
 
-            if (vehiculo == null) 
+            if (vehiculo == null)
                 return NotFound(new { message = "Vehículo no encontrado" });
-                
-            return Ok(new { data = vehiculo });
+
+            return Ok(vehiculo);
         }
         catch (Exception ex)
         {
@@ -100,7 +96,7 @@ public class VehiculosController : ControllerBase
     }
 
     [HttpGet("marca/{marca}")]
-    [Authorize(Policy = "Authenticated")] // ✅ CORRECTO: Cualquier usuario autenticado puede buscar
+    [Authorize(Policy = "Authenticated")]
     public async Task<IActionResult> GetVehiculosPorMarca(string marca, CancellationToken ct)
     {
         try
@@ -111,24 +107,19 @@ public class VehiculosController : ControllerBase
             var vehiculos = await _context.Vehiculos
                 .AsNoTracking()
                 .Where(v => v.Marca.ToLower().Contains(marca.ToLower()))
-                .Select(v => new
+                .Select(v => new VehiculoDto
                 {
-                    v.Id,
-                    v.Marca,
-                    v.Modelo,
-                    v.Anio,
-                    v.Precio,
-                    OportunidadesCount = _context.Oportunidades.Count(o => o.VehiculoId == v.Id)
+                    Id = v.Id,
+                    Marca = v.Marca,
+                    Modelo = v.Modelo,
+                    Anio = v.Anio,
+                    Precio = v.Precio
                 })
                 .OrderBy(v => v.Modelo)
                 .ThenBy(v => v.Anio)
                 .ToListAsync(ct);
 
-            return Ok(new { 
-                data = vehiculos,
-                total = vehiculos.Count,
-                marca = marca
-            });
+            return Ok(vehiculos);
         }
         catch (Exception ex)
         {
@@ -137,7 +128,7 @@ public class VehiculosController : ControllerBase
     }
 
     [HttpGet("search")]
-    [Authorize(Policy = "Authenticated")] // ✅ CORRECTO: Cualquier usuario autenticado puede buscar
+    [Authorize(Policy = "Authenticated")]
     public async Task<IActionResult> BuscarVehiculos([FromQuery] string search, CancellationToken ct)
     {
         try
@@ -148,24 +139,19 @@ public class VehiculosController : ControllerBase
             var vehiculos = await _context.Vehiculos
                 .AsNoTracking()
                 .Where(v => v.Marca.Contains(search) || v.Modelo.Contains(search))
-                .Select(v => new
+                .Select(v => new VehiculoDto
                 {
-                    v.Id,
-                    v.Marca,
-                    v.Modelo,
-                    v.Anio,
-                    v.Precio,
-                    OportunidadesCount = _context.Oportunidades.Count(o => o.VehiculoId == v.Id)
+                    Id = v.Id,
+                    Marca = v.Marca,
+                    Modelo = v.Modelo,
+                    Anio = v.Anio,
+                    Precio = v.Precio
                 })
                 .OrderBy(v => v.Marca)
                 .ThenBy(v => v.Modelo)
                 .ToListAsync(ct);
 
-            return Ok(new { 
-                data = vehiculos,
-                total = vehiculos.Count,
-                terminoBusqueda = search
-            });
+            return Ok(vehiculos);
         }
         catch (Exception ex)
         {
@@ -174,7 +160,7 @@ public class VehiculosController : ControllerBase
     }
 
     [HttpGet("marcas")]
-    [Authorize(Policy = "Authenticated")] // ✅ CORRECTO: Cualquier usuario autenticado puede ver marcas
+    [Authorize(Policy = "Authenticated")]
     public async Task<IActionResult> GetMarcas(CancellationToken ct)
     {
         try
@@ -186,10 +172,7 @@ public class VehiculosController : ControllerBase
                 .OrderBy(m => m)
                 .ToListAsync(ct);
 
-            return Ok(new { 
-                data = marcas,
-                total = marcas.Count
-            });
+            return Ok(marcas);
         }
         catch (Exception ex)
         {
@@ -198,37 +181,44 @@ public class VehiculosController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Policy = "InventarioOrAdmin")] // 🔹 CORREGIDO: Solo inventario y admin pueden crear
-    public async Task<IActionResult> CrearVehiculo([FromBody] Vehiculo vehiculo, CancellationToken ct)
+    [Authorize(Policy = "InventarioOrAdmin")]
+    public async Task<IActionResult> CrearVehiculo([FromBody] CrearVehiculoDto dto, CancellationToken ct)
     {
         try
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return BadRequest(new { message = "Datos inválidos", errors = ModelState.Values.SelectMany(v => v.Errors) });
 
-            // Validar si ya existe un vehículo con la misma marca, modelo y año
             var vehiculoExistente = await _context.Vehiculos
-                .FirstOrDefaultAsync(v => 
-                    v.Marca == vehiculo.Marca && 
-                    v.Modelo == vehiculo.Modelo && 
-                    v.Anio == vehiculo.Anio, ct);
-                
+                .FirstOrDefaultAsync(v =>
+                    v.Marca == dto.Marca &&
+                    v.Modelo == dto.Modelo &&
+                    v.Anio == dto.Anio, ct);
+
             if (vehiculoExistente != null)
                 return BadRequest(new { message = "Ya existe un vehículo con esta marca, modelo y año" });
+
+            var vehiculo = new Vehiculo
+            {
+                Marca = dto.Marca,
+                Modelo = dto.Modelo,
+                Anio = dto.Anio,
+                Precio = dto.Precio
+            };
 
             _context.Vehiculos.Add(vehiculo);
             await _context.SaveChangesAsync(ct);
 
-            return CreatedAtAction(nameof(GetVehiculoPorId), new { id = vehiculo.Id }, new { 
-                message = "Vehículo creado exitosamente",
-                data = new { 
-                    vehiculo.Id, 
-                    vehiculo.Marca, 
-                    vehiculo.Modelo, 
-                    vehiculo.Anio, 
-                    vehiculo.Precio 
-                }
-            });
+            var result = new VehiculoDto
+            {
+                Id = vehiculo.Id,
+                Marca = vehiculo.Marca,
+                Modelo = vehiculo.Modelo,
+                Anio = vehiculo.Anio,
+                Precio = vehiculo.Precio
+            };
+
+            return CreatedAtAction(nameof(GetVehiculoPorId), new { id = vehiculo.Id }, result);
         }
         catch (Exception ex)
         {
@@ -237,49 +227,45 @@ public class VehiculosController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [Authorize(Policy = "InventarioOrAdmin")] // 🔹 CORREGIDO: Solo inventario y admin pueden actualizar
-    public async Task<IActionResult> ActualizarVehiculo(int id, [FromBody] Vehiculo vehiculo, CancellationToken ct)
+    [Authorize(Policy = "InventarioOrAdmin")]
+    public async Task<IActionResult> ActualizarVehiculo(int id, [FromBody] CrearVehiculoDto dto, CancellationToken ct)
     {
         try
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return BadRequest(new { message = "Datos inválidos", errors = ModelState.Values.SelectMany(v => v.Errors) });
-                
-            if (id != vehiculo.Id) 
-                return BadRequest(new { message = "El ID no coincide" });
 
             var existente = await _context.Vehiculos.FirstOrDefaultAsync(v => v.Id == id, ct);
-            if (existente == null) 
+            if (existente == null)
                 return NotFound(new { message = "Vehículo no encontrado" });
 
-            // Validar si ya existe otro vehículo con la misma marca, modelo y año
             var vehiculoExistente = await _context.Vehiculos
-                .FirstOrDefaultAsync(v => 
-                    v.Marca == vehiculo.Marca && 
-                    v.Modelo == vehiculo.Modelo && 
-                    v.Anio == vehiculo.Anio &&
+                .FirstOrDefaultAsync(v =>
+                    v.Marca == dto.Marca &&
+                    v.Modelo == dto.Modelo &&
+                    v.Anio == dto.Anio &&
                     v.Id != id, ct);
-                
+
             if (vehiculoExistente != null)
                 return BadRequest(new { message = "Ya existe otro vehículo con esta marca, modelo y año" });
 
-            existente.Marca = vehiculo.Marca;
-            existente.Modelo = vehiculo.Modelo;
-            existente.Anio = vehiculo.Anio;
-            existente.Precio = vehiculo.Precio;
+            existente.Marca = dto.Marca;
+            existente.Modelo = dto.Modelo;
+            existente.Anio = dto.Anio;
+            existente.Precio = dto.Precio;
 
             await _context.SaveChangesAsync(ct);
-            
-            return Ok(new { 
-                message = "Vehículo actualizado exitosamente",
-                data = new { 
-                    existente.Id, 
-                    existente.Marca, 
-                    existente.Modelo, 
-                    existente.Anio, 
-                    existente.Precio 
-                }
-            });
+
+            var result = new VehiculoDto
+            {
+                Id = existente.Id,
+                Marca = existente.Marca,
+                Modelo = existente.Modelo,
+                Anio = existente.Anio,
+                Precio = existente.Precio
+            };
+
+            return Ok(result);
         }
         catch (Exception ex)
         {
@@ -288,7 +274,7 @@ public class VehiculosController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    [Authorize(Policy = "AdminOnly")] // 🔹 CORREGIDO: Solo admin puede eliminar
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> EliminarVehiculo(int id, CancellationToken ct)
     {
         try
@@ -296,12 +282,12 @@ public class VehiculosController : ControllerBase
             var vehiculo = await _context.Vehiculos
                 .FirstOrDefaultAsync(v => v.Id == id, ct);
 
-            if (vehiculo == null) 
+            if (vehiculo == null)
                 return NotFound(new { message = "Vehículo no encontrado" });
 
             var tieneOportunidades = await _context.Oportunidades
                 .AnyAsync(o => o.VehiculoId == id, ct);
-            
+
             var tieneCotizacionItems = await _context.CotizacionItems
                 .AnyAsync(ci => ci.VehiculoId == id, ct);
 
@@ -310,7 +296,7 @@ public class VehiculosController : ControllerBase
 
             _context.Vehiculos.Remove(vehiculo);
             await _context.SaveChangesAsync(ct);
-            
+
             return Ok(new { message = "Vehículo eliminado exitosamente" });
         }
         catch (Exception ex)

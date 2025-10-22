@@ -16,7 +16,8 @@ public class Factura
     [Required, MaxLength(50)]
     public string Numero { get; set; } = string.Empty;
 
-    public bool Emitida { get; set; } = false;
+    [Required, MaxLength(20)]
+    public string Estado { get; set; } = "Pendiente";
 
     [Column(TypeName = "numeric(18,2)")]
     public decimal Total { get; set; }

@@ -12,9 +12,6 @@ public partial class VentasDbContext
     public DbSet<Cotizacion> Cotizaciones => Set<Cotizacion>();
     public DbSet<CotizacionItem> CotizacionItems => Set<CotizacionItem>();
     public DbSet<Factura> Facturas => Set<Factura>();
-
-    // DbSets usados por tus controllers de Productos / Clientes / Ventas
-    public DbSet<Producto> Productos => Set<Producto>();
     public DbSet<Cliente> Clientes => Set<Cliente>();
     public DbSet<Venta> Ventas => Set<Venta>();
     public DbSet<VentaProducto> VentaProductos => Set<VentaProducto>();
@@ -87,15 +84,6 @@ public partial class VentasDbContext
              .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // ===================== Dominio Productos / Clientes / Ventas =====================
-
-        // Producto
-        modelBuilder.Entity<Producto>(b =>
-        {
-            // Ya existe en migraciones como numeric(18,2). Aseguramos precisión.
-            b.Property(p => p.Precio).HasPrecision(18, 2);
-            // Si quisieras evitar nombres duplicados: b.HasIndex(p => p.Nombre).IsUnique(false);
-        });
 
         // Cliente
         modelBuilder.Entity<Cliente>(b =>
@@ -117,19 +105,16 @@ public partial class VentasDbContext
         // VentaProducto
         modelBuilder.Entity<VentaProducto>(b =>
         {
-            b.Property(vp => vp.PrecioUnitario).HasColumnType("numeric"); // migración usa numeric simple
+            b.Property(vp => vp.PrecioUnitario).HasColumnType("numeric");
             b.HasOne(vp => vp.Venta)
              .WithMany(v => v.ProductosVendidos)
              .HasForeignKey(vp => vp.VentaId)
              .OnDelete(DeleteBehavior.Cascade);
 
-            b.HasOne(vp => vp.Producto)
+            b.HasOne(vp => vp.Vehiculo)
              .WithMany()
-             .HasForeignKey(vp => vp.ProductoId)
+             .HasForeignKey(vp => vp.VehiculoId)
              .OnDelete(DeleteBehavior.Cascade);
-
-            // Si quieres evitar duplicar el mismo producto en una venta:
-            // b.HasIndex(vp => new { vp.VentaId, vp.ProductoId }).IsUnique();
         });
     }
 }
