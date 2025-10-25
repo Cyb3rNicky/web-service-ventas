@@ -6,23 +6,19 @@ using WebServiceVentas.Models;
 
 namespace WebServiceVentas.Controllers;
 
-// DTO para salida (response)
+// DTO para salida (response) - ELIMINAR Anio y Precio
 public class EtapaDto
 {
     public int Id { get; set; }
     public string Nombre { get; set; } = string.Empty;
     public int Orden { get; set; }
-    public int? Anio { get; set; }
-    public decimal? Precio { get; set; }
 }
 
-// DTO para entrada (creación/actualización)
+// DTO para entrada (creación/actualización) - ELIMINAR Anio y Precio
 public class CrearEtapaDto
 {
     public string Nombre { get; set; } = string.Empty;
     public int Orden { get; set; }
-    public int? Anio { get; set; }
-    public decimal? Precio { get; set; }
 }
 
 [ApiController]
@@ -49,9 +45,7 @@ public class EtapasController : ControllerBase
                 {
                     Id = e.Id,
                     Nombre = e.Nombre,
-                    Orden = e.Orden,
-                    Anio = e.Anio,
-                    Precio = e.Precio
+                    Orden = e.Orden
                 })
                 .ToListAsync(ct);
 
@@ -75,9 +69,7 @@ public class EtapasController : ControllerBase
                 {
                     Id = e.Id,
                     Nombre = e.Nombre,
-                    Orden = e.Orden,
-                    Anio = e.Anio,
-                    Precio = e.Precio
+                    Orden = e.Orden
                 })
                 .FirstOrDefaultAsync(ct);
 
@@ -116,9 +108,7 @@ public class EtapasController : ControllerBase
             var etapa = new Etapa
             {
                 Nombre = dto.Nombre,
-                Orden = dto.Orden,
-                Anio = dto.Anio,
-                Precio = dto.Precio
+                Orden = dto.Orden
             };
 
             _context.Etapas.Add(etapa);
@@ -128,9 +118,7 @@ public class EtapasController : ControllerBase
             {
                 Id = etapa.Id,
                 Nombre = etapa.Nombre,
-                Orden = etapa.Orden,
-                Anio = etapa.Anio,
-                Precio = etapa.Precio
+                Orden = etapa.Orden
             };
 
             return CreatedAtAction(nameof(GetEtapaPorId), new { id = etapa.Id }, result);
@@ -168,8 +156,7 @@ public class EtapasController : ControllerBase
 
             existente.Nombre = dto.Nombre;
             existente.Orden = dto.Orden;
-            existente.Anio = dto.Anio;
-            existente.Precio = dto.Precio;
+
 
             await _context.SaveChangesAsync(ct);
 
@@ -177,9 +164,8 @@ public class EtapasController : ControllerBase
             {
                 Id = existente.Id,
                 Nombre = existente.Nombre,
-                Orden = existente.Orden,
-                Anio = existente.Anio,
-                Precio = existente.Precio
+                Orden = existente.Orden
+
             };
 
             return Ok(result);

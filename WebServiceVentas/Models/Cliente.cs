@@ -18,5 +18,9 @@ namespace WebServiceVentas.Models
 
         [Required]
         public string Direccion { get; set; } = string.Empty;
+
+        [EmailAddress]
+        [MaxLength(255)]
+        public string? CorreoElectronico { get; set; }
     }
 }

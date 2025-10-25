@@ -16,11 +16,6 @@ public class Etapa
     // Orden dentro del pipeline
     public int Orden { get; set; }
 
-    public int? Anio { get; set; }
-
-    [Column(TypeName = "numeric(18,2)")]
-    public decimal? Precio { get; set; }
-
     [JsonIgnore]
     public List<Oportunidad>? Oportunidades { get; set; }
 }
