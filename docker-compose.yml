@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: ventas-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ventasdb
+      POSTGRES_USER: ventasuser
+      POSTGRES_PASSWORD: ventaspwd
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: WebServiceVentas/Dockerfile
+    container_name: ventas-api
+    depends_on:
+      - postgres
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=ventasdb;Username=ventasuser;Password=ventaspwd"
+      ASPNETCORE_ENVIRONMENT: Development
+    ports:
+      - "5248:80"
+
+volumes:
+  pgdata:
+
